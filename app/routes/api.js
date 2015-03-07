@@ -3,6 +3,7 @@
 var express = require('express');
 var router = express.Router();
 var danBot = require('../lib/DanBot');
+var vigodaBot = require('../lib/VigodaBot');
 var chat = require('../lib/ChatHelper');
 var Imgur = require('../lib/Imgur');
 
@@ -12,9 +13,11 @@ router.post('/gif', chat.sendGIF);
 router.post('/jif', chat.sendJIF);
 
 router.post('/dan',  function (req, res) {
-    console.log(JSON.stringify(req.body));
     chat.parseBotReq(danBot, req, res)
+});
 
+router.post('/vigoda',  function (req, res) {
+    chat.parseBotReq(vigodaBot, req, res)
 });
 
 router.post('/', chat.sendGeneric);

@@ -11,7 +11,7 @@ var chatHelper = module.exports = {
      * @param {Express.Respone} res
      */
     sendGIF : function (req, res) {
-        console.log(JSON.stringify(req.body));
+        //console.log(JSON.stringify(req.body));
         bot.parseGifReq(req.body, '/gif')
             .always(function (resp) {
                 res.json(resp);
@@ -24,7 +24,7 @@ var chatHelper = module.exports = {
      * @param {Express.Respone} res
      */
     sendJIF : function (req, res) {
-        console.log(JSON.stringify(req.body));
+        //console.log(JSON.stringify(req.body));
         bot.parseGifReq(req.body, '/jif')
             .always(function (resp) {
                 res.json(resp);
@@ -47,7 +47,7 @@ var chatHelper = module.exports = {
      * @param {Express.Respone} res
      */
 	parseBotReq : function (myBot, req, res) {
-        console.log(JSON.stringify(req.body));
+        //console.log(JSON.stringify(req.body));
         myBot.parseReq(req.body)
             .always(function(msg){
                 res.send(msg);
