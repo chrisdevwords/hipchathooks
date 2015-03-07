@@ -58,7 +58,7 @@ module.exports = {
         var def = $.Deferred();
         var handle = this.getSenderHandle(reqData);
 
-        imgur.getRandom(encodeURIComponent(query))
+        imgur.getRandomFromSearch(encodeURIComponent(query))
             .done(function(resp) {
                 def.resolve({
                     color: "green",

@@ -41,7 +41,7 @@ Imgur.prototype.search = function (query, sort, page) {
     return def.promise();
 };
 
-Imgur.prototype.getRandom = function(q, sort, page) {
+Imgur.prototype.getRandomFromSearch = function(q, sort, page) {
 
     var def = $.Deferred();
     var _this = this;
@@ -49,20 +49,14 @@ Imgur.prototype.getRandom = function(q, sort, page) {
 
     this.search(q, sort, page)
         .done(function(resp){   
-            if (_.isEmpty(resp.data)) {
-                def.reject({
-                    status : 500, 
-                    msg : 'malformed imgur response', 
-                    resp : resp
-                });
+
+            gifs = _this.parseGIFResp(resp);
+            if (gifs.length) {
+                def.resolve(gifs[Math.floor(gifs.length * Math.random())]);
             } else {
-                gifs = _this.parseGIFResp(resp.data);
-                if (gifs.length) {
-                    def.resolve(gifs[Math.floor(gifs.length * Math.random())]);
-                } else {
-                    def.reject({msg: 'no gifs found'});
-                }
+                def.reject({msg: 'no gifs found'});
             }
+
         })
         .fail(function(err){
             def.reject(err);
@@ -70,7 +64,59 @@ Imgur.prototype.getRandom = function(q, sort, page) {
     return def.promise();
 };
 
-Imgur.prototype.parseGIFResp = function (data) {
+Imgur.prototype.getAlbum = function(id) {
+
+    var def = $.Deferred();
+    var options = {
+        host : 'api.imgur.com',
+        path : '/3/album/' + id + '/images',
+        headers : {
+            'Authorization'	: 'Client-ID ' + this.apiKey
+        }
+    };
+
+    req.getJSON(options,
+
+        function (status, response) {
+            var resp = {
+                status : status,
+                data : response
+            };
+            if (status === 200) {
+                def.resolve(resp);
+            } else {
+                def.reject(resp);
+            }
+        }
+    );
+
+    return def.promise();
+};
+
+Imgur.prototype.getRandomFromAlbum = function(albumId) {
+
+    var def = $.Deferred();
+    var _this = this;
+    var gifs;
+
+    this.getAlbum(albumId)
+        .done(function(resp){
+            gifs = _this.parseGIFResp(resp);
+            if (gifs.length) {
+                def.resolve(gifs[Math.floor(gifs.length * Math.random())]);
+            } else {
+                def.reject({msg: 'no gifs found'});
+            }
+        })
+        .fail(function(err){
+            def.reject(err);
+        });
+
+    return def.promise();
+};
+
+Imgur.prototype.parseGIFResp = function (resp) {
+    var data = resp.data ? resp.data : '{"data":{}}';
     var json = JSON.parse(data);
     if (_.isArray(json.data)) {
         return json.data;
