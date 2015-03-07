@@ -110,8 +110,18 @@ module.exports = {
      */
     getMessageText : function (reqData) {
         return this.getMessage(reqData).message || '';
+    },
+
+    /**
+     * finds the message string in the req body, removes the slug and seperates it into lower case fragments
+     * @param {object} reqData - hip chat request body
+     * @param {string} slug (optional) - the slug to be removed from the message
+     * @returns {array} - array of words in chat message
+     */
+    getMessageExploded : function(reqData, slug) {
+        var message = this.getMessageText(reqData);
+        message = _.last(message.split(slug || '')).toLowerCase()
+        return message.split(' ');
     }
-
-
 
 };

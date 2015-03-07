@@ -12,8 +12,8 @@ var danBot = {
         'Oh hey, {handle}. Don\'t eat street meat. Just kidding it\'s great.',
         'Seriously. Don\'t have kids. {handle}, you know what I\'m talking about...',
         '{handle}, pull my finger. C\'mon... Do it.',
-        '{handle}, check out 2girls1cup.com. So funny. Seriously.',
-        'Have you seen cake farts? {handle} hasn\'t seen cakefarts.com. Go to cakefarts.com. So funny, you guys.'
+        'Have you seen CakeFarts? {handle} hasn\'t seen it, guys! Go to cakefarts.com. So funny, you guys.',
+        '{handle}, check out 2 girls 1 cup. So gross. Google it. Seriously.'
     ],
     weather : [
         'Too cold for Rollerblading, {handle}.',
@@ -36,29 +36,13 @@ module.exports = _.extend(danBot, genBot, {
 
     parseReq : function (data) {
 
-        var def = $.Deferred();
+        var def;
         var type = this.getType(data);
-        var imgur;
 
         if (type === 'picture') {
-            imgur = new Imgur(process.env.IMGUR_ID);
-            imgur.getRandomFromAlbum(this.IMGUR_GALLERY)
-                .done(function (gif){
-                    def.resolve({
-                        color: "green",
-                        message_prefix: "Dan Bot:",
-                        message: gif.link,
-                        message_format: "text"
-                    });
-                }).fail(function () {
-                    def.reject({
-                        color: "red",
-                        message_prefix: "Dan Bot:",
-                        message: 'Oh, sorry. no pictures of Dan right now. Try Connecticut.',
-                        message_format: "text"
-                    });
-                });
+            return this.getPictureofDan(data);
         } else {
+            def = $.Deferred()
             def.resolve({
                 color: "green",
                 message_prefix: "Dan Bot:",
@@ -79,11 +63,6 @@ module.exports = _.extend(danBot, genBot, {
             return 'weather';
         }
         return 'picture';
-    },
-
-    getMessageExploded : function(reqData, slug) {
-        var message = this.getMessageText(reqData);
-        return _.last(message.split(slug)).toLowerCase().split(' ');
     },
 
     getResponseText : function (reqData, type) {
@@ -108,5 +87,30 @@ module.exports = _.extend(danBot, genBot, {
         var month = new Date().getMonth();
         var weather  = this.weather[month];
         return weather.replace('{handle}', this.getSenderHandle(reqData));
+    },
+
+    getPictureofDan : function (reqData) {
+
+        var def = $.Deferred();
+        var imgur = new Imgur(process.env.IMGUR_ID);
+        var handle = this.getSenderHandle(reqData);
+
+        imgur.getRandomFromAlbum(this.IMGUR_GALLERY)
+            .done(function (gif){
+                def.resolve({
+                    color: "green",
+                    message_prefix: "Dan Bot:",
+                    message: gif.link,
+                    message_format: "text"
+                });
+            }).fail(function () {
+                def.reject({
+                    color: "red",
+                    message_prefix: "Dan Bot:",
+                    message: 'Oh, hey. Sorry, ' + handle + ' no pictures of Dan right now. Try Connecticut.',
+                    message_format: "text"
+                });
+            });
+        return def.promise();
     }
 });
