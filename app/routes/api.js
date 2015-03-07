@@ -20,6 +20,7 @@ router.post('/dan',  function (req, res) {
 router.post('/', chat.sendGeneric);
 
 // get endpoints mostly for testing
+
 router.get('/', function (req, res) {
     res.end('oh hey. it\'s the api.');
 });

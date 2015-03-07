@@ -101,6 +101,15 @@ module.exports = {
             return reqData.item.message || {};
         }
         return {};
+    },
+
+    /**
+     * finds the message string in the req body
+     * @param {object} reqData - hip chat request body
+     * @returns {string} - message string from a hipchat request
+     */
+    getMessageText : function (reqData) {
+        return this.getMessage(reqData).message || '';
     }
 
 
