@@ -101,7 +101,10 @@ module.exports = _.extend(danBot, genBot, {
                     color: "green",
                     message_prefix: "Dan Bot:",
                     message: gif.link,
-                    message_format: "text"
+                    message_format: "text",
+                    from : {
+                        name : 'Dan Bot'
+                    }
                 });
             }).fail(function () {
                 def.reject({
