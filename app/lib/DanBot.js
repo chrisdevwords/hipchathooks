@@ -10,7 +10,25 @@ var danBot = {
     advice : [
         'Oh hey, {handle}. Don\'t get married. Just kidding it\'s great.',
         'Oh hey, {handle}. Don\'t eat street meat. Just kidding it\'s great.',
-        'Seriously. Don\'t have kids. {handle}, you know what I\'m talking about...'
+        'Seriously. Don\'t have kids. {handle}, you know what I\'m talking about...',
+        '{handle}, pull my finger. C\'mon... Do it.',
+        '{handle}, check out 2girls1cup.com. So funny. Seriously.',
+        'Have you seen cake farts? {handle} hasn\'t seen cakefarts.com. Go to cakefarts.com. So funny, you guys.'
+    ],
+    weather : [
+        'Too cold for Rollerblading, {handle}.',
+        'Too cold for Hershey Park, , {handle}.',
+        'Still too cold for Hershey Park, {handle}.',
+        'Warm enough for rollerblading. Not quite nice enough for Hershey Park.',
+        'Great weather for Hershey Park, {handle}. Better leave early.',
+        'Getting kind of sweaty.',
+        'So sweaty, {handle}. Seriously. Metro North is so gross.',
+        'So sweaty. Don\'t take the Metro North. {handle}, you know what I\'m talking about...',
+        'Should be a good day for Hershey Park, {handle}. Better leave early.',,
+        'Last chance to get to Hershey Park or do some rollerblading. Better leave early, {handle}.',
+        'Too cold for Hershey Park, but still really sweaty on the Metro North. Had to sleep on the couch, {handle}.',
+        'Hershey Park is closed, but you can probably rollerblade just don\'t wear cargo shorts. I\'m kidding. They\'re great.',
+        'Too cold for Rollerblading, but they\'re turning up the heat on the Metro North. So sweaty. Had to sleep on the couch.'
     ]
 };
 
@@ -44,7 +62,7 @@ module.exports = _.extend(danBot, genBot, {
             def.resolve({
                 color: "green",
                 message_prefix: "Dan Bot:",
-                message: this.getResponseText(data),
+                message: this.getResponseText(data, type),
                 message_format: "text"
             });
         }
@@ -53,26 +71,42 @@ module.exports = _.extend(danBot, genBot, {
     },
 
     getType : function (reqData) {
-        var message = this.getMessageText(reqData);
-        var words = _.last(message.split('/dan')).toLowerCase().split(' ');
-        if (words.indexOf('gif') > 0) {
-            return 'picture';
+        var words = this.getMessageExploded(reqData, '/dan');
+        if (words.indexOf('advice') > 0) {
+            return 'advice';
         }
-        if (words.indexOf('jif') > 0) {
-            return 'picture';
+        if (words.indexOf('weather') > 0) {
+            return 'weather';
         }
-        if (words.indexOf('picture') > 0) {
-            return 'picture';
-        }
-        return 'advice';
+        return 'picture';
     },
 
-    getResponseText : function (reqData) {
-        return this.getAdvice(reqData);
+    getMessageExploded : function(reqData, slug) {
+        var message = this.getMessageText(reqData);
+        return _.last(message.split(slug)).toLowerCase().split(' ');
+    },
+
+    getResponseText : function (reqData, type) {
+        var txt;
+        switch (type) {
+            case 'weather':
+                txt = this.getWeather(reqData);
+                break;
+            default:
+                txt = this.getAdvice(reqData);
+                break;
+        }
+        return txt;
     },
 
     getAdvice : function(reqData) {
         var advice = this.advice[Math.floor(this.advice.length*Math.random())];
         return advice.replace('{handle}', this.getSenderHandle(reqData));
+    },
+
+    getWeather : function(reqData) {
+        var month = new Date().getMonth();
+        var weather  = this.weather[month];
+        return weather.replace('{handle}', this.getSenderHandle(reqData));
     }
 });
