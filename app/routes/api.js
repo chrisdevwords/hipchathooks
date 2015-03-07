@@ -2,43 +2,25 @@
 
 var express = require('express');
 var router = express.Router();
-var Imgur = require('../lib/Imgur');
+var danBot = require('../lib/DanBot');
 var chat = require('../lib/ChatHelper');
 
+
+router.post('/gif', chat.sendGIF);
+
+router.post('/jif', chat.sendGIF);
+
+router.post('/dan',  function (req, res) {
+    console.log(JSON.stringify(req.body));
+    chat.parseBotReq(danBot, req, res)
+
+});
+
+router.post('/', chat.sendGeneric);
+
+// get endpoints mostly for testing
 router.get('/', function (req, res) {
-	res.end('oh hey. it\'s the api.' + process.env.IMGUR_SECRET);
-});
-
-router.post('/gif', function (req, res) {
-	//console.log(JSON.stringify(req.body));
-	chat.parseGif(req.body)
-		.always(function (resp) {
-			res.json(resp);
-		});
-});
-
-router.post('/jif', function (req, res) {
-	//console.log(JSON.stringify(req.body));
-	chat.parseGif(req.body)
-		.always(function (resp) {
-			res.json(resp);
-		});
-});
-
-router.post('/dan', function (req, res) {
-	//console.log(JSON.stringify(req.body));
-	chat.parseDan(req.body)
-		.always(function (resp) {
-			res.json(resp);
-		});
-});
-
-router.post('/', function (req, res) {
-	//console.log(JSON.stringify(req.body));
-	chat.parse(req.body)
-		.always(function (resp) {
-			res.json(resp);
-		});
+    res.end('oh hey. it\'s the api.');
 });
 
 router.get('/gif', function (req, res) {

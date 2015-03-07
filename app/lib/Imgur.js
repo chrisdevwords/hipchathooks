@@ -42,9 +42,11 @@ Imgur.prototype.search = function (query, sort, page) {
 };
 
 Imgur.prototype.getRandom = function(q, sort, page) {
+
     var def = $.Deferred();
     var _this = this;
     var gifs;
+
     this.search(q, sort, page)
         .done(function(resp){   
             if (_.isEmpty(resp.data)) {
@@ -55,8 +57,12 @@ Imgur.prototype.getRandom = function(q, sort, page) {
                 });
             } else {
                 gifs = _this.parseGIFResp(resp.data);
-                def.resolve(gifs[Math.floor(gifs.length * Math.random())]);
-            } 
+                if (gifs.length) {
+                    def.resolve(gifs[Math.floor(gifs.length * Math.random())]);
+                } else {
+                    def.reject({msg: 'no gifs found'});
+                }
+            }
         })
         .fail(function(err){
             def.reject(err);
