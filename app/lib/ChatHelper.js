@@ -12,7 +12,20 @@ var chatHelper = module.exports = {
      */
     sendGIF : function (req, res) {
         console.log(JSON.stringify(req.body));
-        bot.parseGifReq(req.body)
+        bot.parseGifReq(req.body, '/gif')
+            .always(function (resp) {
+                res.json(resp);
+            });
+    },
+
+    /**
+     * post handler for jif endpoints
+     * @param {Express.Request} req
+     * @param {Express.Respone} res
+     */
+    sendJIF : function (req, res) {
+        console.log(JSON.stringify(req.body));
+        bot.parseGifReq(req.body, '/jif')
             .always(function (resp) {
                 res.json(resp);
             });

@@ -9,7 +9,7 @@ var Imgur = require('../lib/Imgur');
 
 router.post('/gif', chat.sendGIF);
 
-router.post('/jif', chat.sendGIF);
+router.post('/jif', chat.sendJIF);
 
 router.post('/dan',  function (req, res) {
     console.log(JSON.stringify(req.body));
