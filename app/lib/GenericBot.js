@@ -39,25 +39,23 @@ module.exports = {
     parseGifReq : function (data, slug) {
 
         var msg = data.item.message.message;
-        var query = _.last(msg.split(slug || '/gif')) + ' ext:gif';
-
-        return this.findGIF(query, data);
+        var query = _.last(msg.split(slug || '/gif')).trim() + ' ext:gif';
+        return this.findImg(query, data);
     },
 
     /**
-     * searches imgur for a gif
+     * searches imgur for an img
      * @param {string} query
      * @param {object} reqData - the hipchat request body
      * @returns {jquery-deferred} - promise
-     *           resolves with hipchat response message containing gif
-     *           rejects with hipchat error response if no gifs found with that query
+     *           resolves with hipchat response message containing img
+     *           rejects with hipchat error response if no imgs found with that query
      */
-    findGIF : function (query, reqData) {
+    findImg : function (query, reqData) {
 
         var imgur = new Imgur(process.env.IMGUR_ID);
         var def = $.Deferred();
         var handle = this.getSenderHandle(reqData);
-
         imgur.getRandomFromSearch(encodeURIComponent(query))
             .done(function(resp) {
                 def.resolve({
