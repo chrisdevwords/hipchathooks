@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var danBot = require('../lib/DanBot');
 var vigodaBot = require('../lib/VigodaBot');
+var tubeBot = require('../lib/TubeBot');
 var chat = require('../lib/ChatHelper');
 var Imgur = require('../lib/Imgur');
 
@@ -18,6 +19,10 @@ router.post('/dan',  function (req, res) {
 
 router.post('/vigoda',  function (req, res) {
     chat.parseBotReq(vigodaBot, req, res)
+});
+
+router.post('/tube',  function (req, res) {
+    chat.parseBotReq(tubeBot, req, res)
 });
 
 router.post('/', chat.sendGeneric);

@@ -20,7 +20,6 @@ module.exports = {
         var sender = this.getSenderHandle(reqData);
         def.resolve({
             color: 'green',
-            message_prefix: 'Message Prefix:',
             message: 'oh hey, ' + sender + '. it\'s a generic bot.',
             message_format: "text"
         });
@@ -38,8 +37,8 @@ module.exports = {
      */
     parseGifReq : function (data, slug) {
 
-        var msg = data.item.message.message;
-        var query = _.last(msg.split(slug || '/gif')).trim() + ' ext:gif';
+        var msg = this.getMessageText(data);
+        var query = msg.split(slug || '/gif').shift().trim() + ' ext:gif';
         return this.findImg(query, data);
     },
 
@@ -60,7 +59,6 @@ module.exports = {
             .done(function(resp) {
                 def.resolve({
                     color: "green",
-                    message_prefix: "GIF:",
                     message: resp.link,
                     message_format: "text"
                 });
@@ -68,7 +66,6 @@ module.exports = {
             .fail(function(err){
                 def.reject({
                     color: "red",
-                    message_prefix: "Whoops:",
                     message: 'Sorry, ' + handle + '. I couldn\'t find a GIF with that query. I suck.',
                     message_format: "text"
                 });
