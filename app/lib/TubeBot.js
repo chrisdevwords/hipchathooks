@@ -14,7 +14,7 @@ module.exports = _.extend({}, genBot, {
 
     parseReq : function (data) {
         var msg = this.getMessageText(data);
-        var query = _.last(msg.split(this.slug)).trim();
+        var query = this.stripSlug(msg, this.slug);
         return this.findTube(query, data);
     },
 

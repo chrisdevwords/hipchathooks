@@ -38,8 +38,9 @@ module.exports = {
     parseGifReq : function (data, slug) {
 
         var msg = this.getMessageText(data);
-        var query = msg.split(slug || '/gif').shift().trim() + ' ext:gif';
+        var query = this.stripSlug(msg, slug) + ' ext:gif';
         return this.findImg(query, data);
+
     },
 
     /**
@@ -72,6 +73,16 @@ module.exports = {
             });
 
         return def.promise();
+    },
+
+    /**
+     * remove the slug from a string
+     * @param {string} msg
+     * @param {string} slug
+     * @returns {string}
+     */
+    stripSlug : function (msg, slug) {
+        return  _.last(msg.split(slug)).trim();
     },
 
     /**
@@ -115,7 +126,7 @@ module.exports = {
      */
     getMessageExploded : function(reqData, slug) {
         var message = this.getMessageText(reqData);
-        message = _.last(message.split(slug || '')).toLowerCase()
+        message = this.stripSlug(message, slug).toLowerCase();
         return message.split(' ');
     }
 
