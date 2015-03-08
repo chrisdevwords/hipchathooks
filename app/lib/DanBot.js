@@ -38,7 +38,6 @@ module.exports = _.extend(danBot, genBot, {
 
         var def;
         var type = this.getType(data);
-
         if (type === 'picture') {
             return this.getPictureofDan(data);
         } else {
@@ -56,10 +55,10 @@ module.exports = _.extend(danBot, genBot, {
 
     getType : function (reqData) {
         var words = this.getMessageExploded(reqData, '/dan');
-        if (words.indexOf('advice') > 0) {
+        if (words.indexOf('advice') >= 0) {
             return 'advice';
         }
-        if (words.indexOf('weather') > 0) {
+        if (words.indexOf('weather') >= 0) {
             return 'weather';
         }
         return 'picture';
