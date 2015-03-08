@@ -52,6 +52,33 @@ var chatHelper = module.exports = {
             .always(function(msg){
                 res.send(msg);
             });
-	}
+	},
+
+    /**
+     * example post data for testing endpoints in PostMan or Chrome DHC
+     * @param {string} exampleMessage
+     * @returns {{event: string, item: {message: {date: string, from: {mention_name: string, name: string}, message: *, type: string}, room: {id: number, name: string}}}}
+     */
+    getExamplePostData : function (exampleMessage) {
+        return {
+            event:  "room_message",
+            item : {
+                message : {
+                    date : new Date().toTimeString(),
+                    from : {
+                        mention_name : "BuzzBoyardee",
+                        name : "Chris Edwards"
+                    },
+                    message : exampleMessage,
+                    type : "message"
+                },
+                room : {
+                    id : 211269,
+                    name : "Hook Testing"
+                }
+            }
+        };
+    }
+
 
 };
