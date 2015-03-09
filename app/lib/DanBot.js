@@ -4,6 +4,7 @@ var $ = require('jquery-deferred');
 var _ = require('underscore');
 var genBot = require('./GenericBot');
 var Imgur = require('./Imgur');
+var weather = require('weather-js');
 
 var danBot = {
     IMGUR_GALLERY : '5CoxY',
@@ -14,21 +15,6 @@ var danBot = {
         '{handle}, pull my finger. C\'mon... Do it.',
         'Have you seen CakeFarts? {handle} hasn\'t seen it, guys! Go to cakefarts.com. So funny, you guys.',
         '{handle}, check out 2 girls 1 cup. So gross. Google it. Seriously.'
-    ],
-    weather : [
-        'Too cold for Rollerblading, {handle}.',
-        'Too cold for Hershey Park, , {handle}.',
-        'Still too cold for Hershey Park, {handle}.',
-        'Warm enough for rollerblading. Not quite nice enough for Hershey Park.',
-        'Great weather for Hershey Park, {handle}. Better leave early.',
-        'Getting kind of sweaty.',
-        'So sweaty, {handle}. Seriously. Metro North is so gross.',
-        'So sweaty. Don\'t take the Metro North. {handle}, you know what I\'m talking about...',
-        'Should be a good day for Hershey Park, {handle}. Better leave early.',,
-        'Last chance to get to Hershey Park or do some rollerblading. Better leave early, {handle}.',
-        'Too cold for Hershey Park, but still really sweaty on the Metro North. Had to sleep on the couch, {handle}.',
-        'Hershey Park is closed, but you can probably rollerblade just don\'t wear cargo shorts. I\'m kidding. They\'re great.',
-        'Too cold for Rollerblading, but they\'re turning up the heat on the Metro North. So sweaty. Had to sleep on the couch.'
     ]
 };
 
@@ -38,18 +24,23 @@ module.exports = _.extend(danBot, genBot, {
 
         var def;
         var type = this.getType(data);
-        if (type === 'picture') {
-            return this.getPictureofDan(data);
-        } else {
-            def = $.Deferred()
-            def.resolve({
-                color: "green",
-                message_prefix: "Dan Bot:",
-                message: this.getResponseText(data, type),
-                message_format: "text"
-            });
+        switch (type) {
+            case "picture":
+                return this.getPictureofDan(data);
+                break;
+            case 'weather':
+                return this.getWeather(data);
+                break;
+            default:
+                def = $.Deferred()
+                def.resolve({
+                    color: "green",
+                    message_prefix: "Dan Bot:",
+                    message: this.getResponseText(data, type),
+                    message_format: "text"
+                });
+                break;
         }
-
         return def.promise();
     },
 
@@ -82,11 +73,54 @@ module.exports = _.extend(danBot, genBot, {
         return advice.replace('{handle}', this.getSenderHandle(reqData));
     },
 
-    getWeather : function(reqData) {
-        var month = new Date().getMonth();
-        var weather  = this.weather[month];
-        return weather.replace('{handle}', this.getSenderHandle(reqData));
+    getWeather : function (reqData) {
+
+        var def = $.Deferred();
+        var _this = this;
+        var handle = this.getSenderHandle(reqData);
+
+        weather.find({search: 'Connecticut', degreeType: 'F'}, function (err, result) {
+            if (err) {
+                def.reject({
+                    color : "red",
+                    message : 'Oh hey. Couldn\'t get the weather. Don\'t move to Connecticut just kidding it\'s great.',
+                    message_format: "text"
+                });
+            } else {
+                def.resolve({
+                    color : "green",
+                    message : _this.parseWeather(result, handle),
+                    message_format: "text"
+                });
+            }
+        });
+        return def.promise();
     },
+
+    parseWeather : function (result, handle) {
+
+        var current = result[0].current;
+        var temp = +(current.feelslike || current.temperature);
+
+        if (temp >= 90) {
+            return 'So sweaty, ' + handle + '. Had to sleep on the couch. Better call in sick.';
+        }
+        if (temp >= 80) {
+            return 'So sweaty, ' + handle + '. Seriously. Metro North is so gross.';
+        }
+        if (temp >= 75) {
+            return 'Getting kind of sweaty, ' + handle + '. Too hot for rollerblading. Might be a good day for Hershey Park.';
+        }
+        if (temp >= 65) {
+            return 'Should be a good day for Hershey Park, {handle}. Or Rollerblading. Better leave early.';
+        }
+        if (temp >= 45) {
+            return 'Warm enough for rollerblading. Not quite nice enough for Hershey Park. You know what I\'m talking about.';
+        }
+
+        return 'Way too cold for Rollerblading, but they\'re turning up the heat on the Metro North. So sweaty. Better sleep on the couch.';
+    },
+
 
     getPictureofDan : function (reqData) {
 
@@ -98,12 +132,8 @@ module.exports = _.extend(danBot, genBot, {
             .done(function (gif){
                 def.resolve({
                     color: "green",
-                    message_prefix: "Dan Bot:",
                     message: gif.link,
-                    message_format: "text",
-                    from : {
-                        name : 'Dan Bot'
-                    }
+                    message_format: "text"
                 });
             }).fail(function () {
                 def.reject({
