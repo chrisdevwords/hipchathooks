@@ -1,6 +1,6 @@
 {
   "name": "hipchathooks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "a bunch of endpoints to search various apis for hipchat webhooks",
   "main": "index.js",
   "scripts": {
