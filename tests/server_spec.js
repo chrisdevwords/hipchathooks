@@ -2,7 +2,7 @@
 var should = require('should');
 var request = require('supertest');
 
-var server = require('../index');
+var server = require('../server');
 
 describe('Web Server', function () {
 
