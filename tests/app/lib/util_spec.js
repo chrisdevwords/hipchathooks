@@ -1,4 +1,4 @@
-var util = require('../app/lib/util');
+var util = require('../../../app/lib/util');
 var should = require('should');
 
 var arr = [

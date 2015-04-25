@@ -1,8 +1,8 @@
 var should = require('should'),
     sinon = require('sinon'),
     request = require('request'),
-    Imgur = require('../app/lib/imgur'),
-    mock = require('./mock');
+    Imgur = require('../../../app/lib/Imgur'),
+    mock = require('./../../mock/index');
 
 describe('Imgur response parsing', function () {
 
