@@ -80,5 +80,4 @@ var chatHelper = module.exports = {
         };
     }
 
-
 };
