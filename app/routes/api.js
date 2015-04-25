@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('underscore');
 var express = require('express');
 var router = express.Router();
 var mockHook = require('../../tests/mock/webHook');
 var HipChatBot = require('../lib/HipChatBot');
 
-//var danBot = require('../lib/DanBot');
-//var vigodaBot = require('../lib/VigodaBot');
-//var tubeBot = require('../lib/TubeBot');
+var DanBot = HipChatBot; //require('../lib/DanBot');
+var VigodaBot = HipChatBot; //require('../lib/VigodaBot');
+var TubeBot = HipChatBot; //require('../lib/TubeBot');
 
 /**
  * GifBot
@@ -24,7 +23,7 @@ router.get('/gif', function (req, res) {
 
 router.post('/gif', function (req, res) {
     var bot = new HipChatBot();
-    bot.parseGifReq(req, '/gif')
+    bot.parseGifReq(req.body, '/gif')
         .always(function (resp) {
             res.json(resp)
         });
@@ -44,7 +43,7 @@ router.get('/jif', function (req, res) {
 
 router.post('/jif', function (req, res) {
     var bot = new HipChatBot();
-    bot.parseGifReq(req, '/jif')
+    bot.parseGifReq(req.body, '/jif')
         .always(function (resp) {
             res.json(resp)
         });
@@ -63,8 +62,7 @@ router.get('/vigoda', function (req, res) {
 });
 
 router.post('/vigoda',  function (req, res) {
-    //todo replace with VigodaBot when refactored with full coverage...
-    var bot = new HipChatBot();
+    var bot = new VigodaBot();
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
@@ -84,8 +82,7 @@ router.get('/tube', function (req, res) {
 });
 
 router.post('/tube',  function (req, res) {
-    //todo replace with TubeBot when refactored with full coverage...
-    var bot = new HipChatBot();
+    var bot = new TubeBot();
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
@@ -105,8 +102,7 @@ router.get('/dan', function (req, res) {
 })
 
 router.post('/dan',  function (req, res) {
-    //todo replace with DanBot when refactored with full coverage...
-    var bot = new HipChatBot();
+    var bot = new DanBot();
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
