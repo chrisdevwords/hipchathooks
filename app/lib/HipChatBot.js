@@ -110,7 +110,7 @@ HipChatBot.prototype.getMessage = function (reqData) {
 };
 
 /**
- * finds the message string in the req body
+ * Finds the message string in the req body.
  * @param {Object} reqData - hip chat request body
  * @returns {String} - message string from a HipChat request
  */
@@ -119,10 +119,10 @@ HipChatBot.prototype.getMessageText = function (reqData) {
 };
 
 /**
- * finds the message string in the req body, removes the slug and separates it into lower case fragments
- * @param {object} reqData - hip chat request body
- * @param {string} slug (optional) - the slug to be removed from the message
- * @returns {array} - array of words in chat message
+ * Finds the message string in the req body, removes the slug and separates it into lower case fragments
+ * @param {Object} reqData - hip chat request body
+ * @param {String} slug - optional, the slug to be removed from the message
+ * @returns {Array}
  */
 HipChatBot.prototype.getMessageExploded = function (reqData, slug) {
     var message = this.getMessageText(reqData);
