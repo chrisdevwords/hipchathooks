@@ -16,7 +16,7 @@ var app = express();
 app.engine('swig', swig.renderFile);
 app.set('view engine', 'swig');
 app.set('views', path.join(__dirname, 'app', 'views'));
-
+app.use('/test-coverage', express.static(path.join(__dirname , 'test-coverage')));
 app.set('port', (process.env.PORT || 5000))
 
 app.use(logger('dev'));
