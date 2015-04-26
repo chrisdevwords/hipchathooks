@@ -1,7 +1,7 @@
 var should = require('should'),
     sinon = require('sinon'),
     request = require('request'),
-    mockHook = require('../../mock/webHook'),
+    mock = require('../../mock'),
     HipChatBot = require('../../../app/lib/HipChatBot');
 
 describe('HipChatBot', function () {
@@ -14,11 +14,7 @@ describe('HipChatBot', function () {
 
     beforeEach(function () {
         bot = new HipChatBot();
-        reqData = JSON.parse(mockHook.getHook(slug + ' ' + msgTxt, name));
-    });
-
-    it('should be able to parse a HipChat Request', function (done) {
-        done();
+        reqData = JSON.parse(mock.hipChat.getHook(slug + ' ' + msgTxt, name));
     });
 
     it('should be able to strip the slug from a request', function (done) {
@@ -56,4 +52,91 @@ describe('HipChatBot', function () {
         parts.length.should.equal(3);
         done();
     });
+
+    describe('HipChatBot async methods', function (done) {
+        beforeEach(function (done) {
+            sinon
+                .stub(request, 'get')
+                .yields(null, {statusCode: 200}, mock.imgur.search);
+            done();
+        });
+
+        afterEach(function (done) {
+            request.get.restore();
+            done();
+        });
+
+        it('Resolves w/ a generic HipChat response object', function (done) {
+            done();
+        });
+
+        it('Resolves w/ an Image response object', function (done) {
+            done();
+        });
+
+        it('Resolves w/ a GIF response object', function (done) {
+            done();
+        });
+
+    });
+
+    describe('HipChatBot async error handling for Imgur', function () {
+
+        afterEach(function (done) {
+            request.get.restore();
+            done();
+        });
+
+        it('Resolves an invalid Imgur API Key w/ a message for HipChat', function (done) {
+
+            var errorMsg = JSON.parse(mock.imgur.serviceError.apiKey).data.error;
+
+            sinon
+                .stub(request, 'get')
+                .yields(null, {statusCode: 403}, mock.imgur.serviceError.apiKey);
+
+            bot.parseGifReq(reqData, slug)
+                .fail(function (resp) {
+                    resp.should.be.an.Object;
+                    resp.color.should.equal('red');
+                    resp.message.indexOf(errorMsg)
+                        .should.be.greaterThan(-1);
+                    done();
+                });
+        });
+
+        it('Resolves a search with no results w/ a message for HipChat', function (done) {
+            //.yields(null, {statusCode: 200}, mock.imgur.serviceError.emptySearch);
+            sinon
+                .stub(request, 'get')
+                .yields(null, {statusCode: 200}, mock.imgur.serviceError.emptySearch);
+
+            bot.parseGifReq(reqData, slug)
+                .fail(function (resp) {
+                    resp.should.be.an.Object;
+                    resp.color.should.equal('red');
+                    resp.message.indexOf(HipChatBot.ERROR_NO_RESULTS)
+                        .should.be.greaterThan(-1);
+                    done();
+                });
+        });
+
+        it('Resolves an http error w/ a message for HipChat', function (done) {
+            // should pass a 500 here
+            var errorMsg = 'Internet borked.';
+            sinon
+                .stub(request, 'get')
+                .yields(new Error(errorMsg));
+            bot.parseGifReq(reqData, slug)
+                .fail(function (resp) {
+                    resp.should.be.an.Object;
+                    resp.color.should.equal('red');
+                    resp.message.indexOf(errorMsg)
+                        .should.be.greaterThan(-1);
+                    done();
+                });
+        });
+
+    });
+
 });

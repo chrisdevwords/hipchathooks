@@ -7,6 +7,17 @@ var Imgur = require('./Imgur');
 function HipChatBot () {};
 
 /**
+ * constants
+ */
+
+/**
+ * error message for empty search result.
+ * @type {string}
+ */
+HipChatBot.ERROR_NO_RESULTS = 'I couldn\'t find anything with that query. I suck.'
+
+
+/**
  * Generic request Parser for HipChat WebHooks
  * Override this in subclasses.
  * Returns a promise that resolves with a generic HipChat message
@@ -55,6 +66,7 @@ HipChatBot.prototype.findImg = function (query, reqData) {
     var imgur = new Imgur(process.env.IMGUR_ID);
     var def = $.Deferred();
     var handle = this.getSenderHandle(reqData);
+    var errorMsg = 'Sorry, ' + handle + '. ';
     imgur.getRandomFromSearch(encodeURIComponent(query))
         .done(function (resp) {
             def.resolve({
@@ -63,10 +75,18 @@ HipChatBot.prototype.findImg = function (query, reqData) {
                 'message_format': 'text'
             });
         })
-        .fail(function (err) {
+        .fail(function (resp) {
+            switch (resp.status) {
+                case 200 :
+                    errorMsg += HipChatBot.ERROR_NO_RESULTS; // todo add query to this
+                    break;
+                default :
+                    errorMsg += resp.data.error;
+                    break;
+            }
             def.reject({
                 color: 'red',
-                message: 'Sorry, ' + handle + '. I couldn\'t find a GIF with that query. I suck.',
+                message: errorMsg,
                 'message_format': 'text'
             });
         });

@@ -252,4 +252,4 @@ describe('Imgur API album endpoint helper', function () {
 
     });
 
-})
+});
