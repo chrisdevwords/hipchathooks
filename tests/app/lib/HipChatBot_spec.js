@@ -115,7 +115,7 @@ describe('HipChatBot', function () {
 
     });
 
-    describe('Resolves async calls to Imgur', function (done) {
+    describe('Resolves async calls to Imgur', function () {
 
         afterEach(function (done) {
             request.get.restore();
@@ -148,7 +148,8 @@ describe('HipChatBot', function () {
         it('Resolves an invalid Imgur API Key w/ a message for HipChat', function (done) {
 
             var errorMsg = JSON.parse(mock.imgur.serviceError.apiKey).data.error;
-
+            var expectedMsg = HipChatBot.ERROR_ROOT
+                .replace('{n}', firstName) + errorMsg;
             sinon
                 .stub(request, 'get')
                 .yields(null, {statusCode: 403}, mock.imgur.serviceError.apiKey);
@@ -157,13 +158,22 @@ describe('HipChatBot', function () {
                 .fail(function (resp) {
                     resp.should.be.an.Object;
                     resp.color.should.equal('red');
-                    resp.message.indexOf(errorMsg)
-                        .should.be.greaterThan(-1);
+                    resp.message.should.equal(expectedMsg)
                     done();
                 });
         });
 
-        it('Resolves a search with no results w/ a message for HipChat', function (done) {
+        it('Resolves null GIF search w/ a message for HipChat containing query', function (done) {
+
+            var query = 'Something there\'s no GIFs of.';
+            var expectedResponse = HipChatBot.ERROR_NO_RESULTS
+                .replace('{n}', firstName)
+                .replace('{q}', query);
+
+            reqData = JSON.parse(
+                mock.hipChat.getHook(slug + ' ' + query, name)
+            );
+
             sinon
                 .stub(request, 'get')
                 .yields(null, {statusCode: 200}, mock.imgur.serviceError.emptySearch);
@@ -172,8 +182,7 @@ describe('HipChatBot', function () {
                 .fail(function (resp) {
                     resp.should.be.an.Object;
                     resp.color.should.equal('red');
-                    resp.message.indexOf(HipChatBot.ERROR_NO_RESULTS)
-                        .should.be.greaterThan(-1);
+                    resp.message.should.equal(expectedResponse);
                     done();
                 });
         });
@@ -181,6 +190,9 @@ describe('HipChatBot', function () {
         it('Resolves an http error w/ a custom message for HipChat', function (done) {
 
             var errorMsg = 'Internet borked.';
+            var expectedResponse = HipChatBot.ERROR_500
+                .replace('{n}', firstName);
+
             sinon
                 .stub(request, 'get')
                 .yields(new Error(errorMsg));
@@ -190,8 +202,7 @@ describe('HipChatBot', function () {
                     resp.color.should.equal('red');
                     resp.message.indexOf(errorMsg)
                         .should.equal(-1);
-                    resp.message.indexOf(HipChatBot.ERROR_500)
-                        .should.be.greaterThan(-1);
+                    resp.message.should.equal(expectedResponse);
                     done();
                 });
         });

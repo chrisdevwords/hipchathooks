@@ -14,22 +14,31 @@ var Imgur = require('./Imgur');
 function HipChatBot () {};
 
 /**
+ * start every error with an apology...
+ * @type {string}
+ */
+HipChatBot.ERROR_ROOT = 'Sorry, {n}. ';
+
+/**
  * error message for empty search result.
  * @type {string}
  */
-HipChatBot.ERROR_NO_RESULTS = 'I couldn\'t find anything with that query. I suck.';
+HipChatBot.ERROR_NO_RESULTS = HipChatBot.ERROR_ROOT +
+    'I couldn\'t find anything with the query: "{q}". I suck.';
 
 /**
  * error message for 500.
  * @type {string}
  */
-HipChatBot.ERROR_500 = 'Hmmm... something\'s borked. Try again later...';
+HipChatBot.ERROR_500 = HipChatBot.ERROR_ROOT +
+    'Something\'s borked. Try again later...';
 
 /**
  * error message for 500.
  * @type {string}
  */
-HipChatBot.ERROR_BAD_HOOK = 'Hmmm... something\'s borked. HipChat data looks funny.';
+HipChatBot.ERROR_BAD_HOOK = HipChatBot.ERROR_ROOT +
+    'Something\'s borked. HipChat data looks funny.';
 
 /**
  * Generic request Parser for HipChat WebHooks
@@ -70,7 +79,7 @@ HipChatBot.prototype.parseReq = function (reqData) {
  */
 HipChatBot.prototype.parseGifReq = function (reqData, slug) {
     var msg = this.getMessageText(reqData);
-    var query = this.stripSlug(msg, slug) + ' ext:gif';
+    var query = this.stripSlug(msg, slug) + Imgur.EXT_GIF;
     return this.findImg(query, reqData);
 };
 
@@ -88,7 +97,7 @@ HipChatBot.prototype.findImg = function (query, reqData) {
     var imgur = new Imgur(process.env.IMGUR_ID);
     var def = $.Deferred();
     var handle = this.getSenderHandle(reqData);
-    var errorMsg = 'Sorry, ' + handle + '. ';
+    var errorMsg;
     imgur.getRandomFromSearch(encodeURIComponent(query))
         .done(function (resp) {
             def.resolve(_this.buildResponse(resp.link));
@@ -96,13 +105,16 @@ HipChatBot.prototype.findImg = function (query, reqData) {
         .fail(function (resp) {
             switch (resp.status) {
                 case 500 :
-                    errorMsg += HipChatBot.ERROR_500; // todo add query to this
+                    errorMsg = HipChatBot.ERROR_500.replace('{n}', handle);
                     break;
                 case 200 :
-                    errorMsg += HipChatBot.ERROR_NO_RESULTS; // todo add query to this
+                    errorMsg = HipChatBot.ERROR_NO_RESULTS
+                        .replace('{n}', handle)
+                        .replace('{q}', unescape(resp.data.query).replace(Imgur.EXT_GIF, ''));
                     break;
                 default :
-                    errorMsg += resp.data.error;
+                    errorMsg = HipChatBot.ERROR_ROOT.replace('{n}', handle) +
+                                resp.data.error;
                     break;
             }
             def.reject(_this.buildResponse(errorMsg, 'red'));
