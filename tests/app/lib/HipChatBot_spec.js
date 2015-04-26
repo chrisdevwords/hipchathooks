@@ -5,13 +5,13 @@ var should = require('should'),
     HipChatBot = require('../../../app/lib/HipChatBot');
 
 describe('HipChatBot', function () {
-
     var bot;
     var reqData;
     var firstName = 'Tester';
     var name = firstName + ' Jones';
     var slug = '/gif';
     var msgTxt = 'testing a message';
+    var REG_URL_VALID = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
     beforeEach(function () {
         bot = new HipChatBot();
@@ -115,7 +115,7 @@ describe('HipChatBot', function () {
 
     });
 
-    describe('HipChatBot async calls to Imgur', function (done) {
+    describe('Resolves async calls to Imgur', function (done) {
 
         afterEach(function (done) {
             request.get.restore();
@@ -128,7 +128,7 @@ describe('HipChatBot', function () {
                 .yields(null, {statusCode: 200}, mock.imgur.search);
             bot.parseGifReq(reqData, slug)
                 .always(function (resp) {
-                    // need regex to test if it's a valid link resp.message.
+                    REG_URL_VALID.test(resp.message).should.equal(true);
                     resp.color.should.equal('green');
                     resp.notify.should.equal(false);
                     resp['message_format'].should.equal('text');
@@ -179,7 +179,7 @@ describe('HipChatBot', function () {
         });
 
         it('Resolves an http error w/ a custom message for HipChat', function (done) {
-            // should pass a 500 here
+
             var errorMsg = 'Internet borked.';
             sinon
                 .stub(request, 'get')
