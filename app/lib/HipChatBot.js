@@ -79,8 +79,15 @@ HipChatBot.prototype.parseReq = function (reqData) {
  */
 HipChatBot.prototype.parseGifReq = function (reqData, slug) {
     var msg = this.getMessageText(reqData);
-    var query = this.stripSlug(msg, slug) + Imgur.EXT_GIF;
-    return this.findImg(query, reqData);
+    var _this = this;
+    var query;
+    if (msg) {
+        query = this.stripSlug(msg, slug) + Imgur.EXT_GIF;
+        return this.findImg(query, reqData);
+    }
+    return $.Deferred().reject(
+        _this.buildResponse(HipChatBot.ERROR_BAD_HOOK.replace('{n}', 'guys'), 'red')
+    ).promise();
 };
 
 /**

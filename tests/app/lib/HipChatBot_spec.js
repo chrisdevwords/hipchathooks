@@ -117,6 +117,18 @@ describe('HipChatBot', function () {
                 });
         });
 
+        it('Resolves parseGifReq w/ error if passed a HipChat hook w/ empty object', function (done) {
+
+            var expectedMsg = HipChatBot.ERROR_BAD_HOOK.replace('{n}', 'guys');
+
+            bot.parseGifReq({})
+                .fail(function (resp) {
+                    resp.color.should.equal('red');
+                    resp.message.should.equal(expectedMsg);
+                    done();
+                });
+        });
+
     });
 
     describe('Resolves async calls to Imgur', function () {
@@ -162,7 +174,7 @@ describe('HipChatBot', function () {
                 .fail(function (resp) {
                     resp.should.be.an.Object;
                     resp.color.should.equal('red');
-                    resp.message.should.equal(expectedMsg)
+                    resp.message.should.equal(expectedMsg);
                     done();
                 });
         });
