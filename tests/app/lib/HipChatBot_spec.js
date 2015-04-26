@@ -106,7 +106,6 @@ describe('HipChatBot', function () {
         });
 
         it('Resolves a search with no results w/ a message for HipChat', function (done) {
-            //.yields(null, {statusCode: 200}, mock.imgur.serviceError.emptySearch);
             sinon
                 .stub(request, 'get')
                 .yields(null, {statusCode: 200}, mock.imgur.serviceError.emptySearch);
@@ -121,7 +120,7 @@ describe('HipChatBot', function () {
                 });
         });
 
-        it('Resolves an http error w/ a message for HipChat', function (done) {
+        it('Resolves an http error w/ a custom message for HipChat', function (done) {
             // should pass a 500 here
             var errorMsg = 'Internet borked.';
             sinon
@@ -132,6 +131,8 @@ describe('HipChatBot', function () {
                     resp.should.be.an.Object;
                     resp.color.should.equal('red');
                     resp.message.indexOf(errorMsg)
+                        .should.equal(-1);
+                    resp.message.indexOf(HipChatBot.ERROR_500)
                         .should.be.greaterThan(-1);
                     done();
                 });

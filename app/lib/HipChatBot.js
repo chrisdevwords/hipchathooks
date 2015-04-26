@@ -16,6 +16,11 @@ function HipChatBot () {};
  */
 HipChatBot.ERROR_NO_RESULTS = 'I couldn\'t find anything with that query. I suck.'
 
+/**
+ * error message for 500.
+ * @type {string}
+ */
+HipChatBot.ERROR_500 = 'Hmmm... something\'s borked. Try again later...';
 
 /**
  * Generic request Parser for HipChat WebHooks
@@ -77,6 +82,9 @@ HipChatBot.prototype.findImg = function (query, reqData) {
         })
         .fail(function (resp) {
             switch (resp.status) {
+                case 500 :
+                    errorMsg += HipChatBot.ERROR_500; // todo add query to this
+                    break;
                 case 200 :
                     errorMsg += HipChatBot.ERROR_NO_RESULTS; // todo add query to this
                     break;
