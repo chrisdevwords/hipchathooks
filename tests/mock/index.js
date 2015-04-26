@@ -1,6 +1,9 @@
 var imgurGallery = require('./imgurGallery');
 var imgurSearch = require('./imgurSearch');
 var imgurServiceErrors = require('./imgurServiceErrors');
+var youtubeSearch = require('./youtubeSearch');
+var youtubeEmptySearch = require('./youtubeEmptySearch');
+var youtubeBadKey = require('./youtubeInvalidKey');
 var webHook = require('./webHook');
 
 module.exports = {
@@ -13,5 +16,12 @@ module.exports = {
         },
         album: JSON.stringify(imgurGallery),
         search:  JSON.stringify(imgurSearch)
+    },
+    youtube: {
+        serviceError: {
+            invalidKey: JSON.stringify(youtubeBadKey),
+            emptySearch: JSON.stringify(youtubeEmptySearch)
+        },
+        search: JSON.stringify(youtubeSearch)
     }
 };
