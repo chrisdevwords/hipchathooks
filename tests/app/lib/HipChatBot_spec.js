@@ -8,7 +8,8 @@ describe('HipChatBot', function () {
 
     var bot;
     var reqData;
-    var name = 'Tester Name';
+    var firstName = 'Tester';
+    var name = firstName + ' Jones';
     var slug = '/gif';
     var msgTxt = 'testing a message';
 
@@ -84,11 +85,26 @@ describe('HipChatBot', function () {
     describe('HipChatBot async methods', function (done) {
 
         it('Resolves w/ a generic HipChat response object', function (done) {
-            done();
+            bot.parseReq(reqData)
+                .done(function (resp) {
+                    resp.message.indexOf(firstName).should.be.greaterThan(-1);
+                    resp.color.should.equal('green');
+                    resp.notify.should.equal(false);
+                    resp['message_format'].should.equal('text');
+                    done();
+                });
         });
 
         it('Resolves w/ error if passed a HipChat hook w/ bad JSON', function (done) {
-            bot.parseReq({})
+            bot.parseReq(null)
+                .fail(function (resp) {
+                    resp.color.should.equal('red');
+                    resp.message.should.equal(HipChatBot.ERROR_BAD_HOOK);
+                    done();
+                });
+        });
+        it('Resolves w/ error if passed a HipChat hook w/ missing data', function (done) {
+            bot.parseReq({item:{}})
                 .fail(function (resp) {
                     resp.color.should.equal('red');
                     resp.message.should.equal(HipChatBot.ERROR_BAD_HOOK);
@@ -105,19 +121,20 @@ describe('HipChatBot', function () {
             done();
         });
 
-        it('Resolves w/ an Image response object', function (done) {
+        it('Resolves a GIF req w/ a GIF response object', function (done) {
             sinon
                 .stub(request, 'get')
                 .yields(null, {statusCode: 200}, mock.imgur.search);
-            done();
+            bot.parseGifReq(reqData, slug)
+                .always(function (resp) {
+                    // need regex to test if it's a valid link resp.message.
+                    resp.color.should.equal('green');
+                    resp.notify.should.equal(false);
+                    resp['message_format'].should.equal('text');
+                    done();
+                });
         });
 
-        it('Resolves w/ a GIF response object', function (done) {
-            sinon
-                .stub(request, 'get')
-                .yields(null, {statusCode: 200}, mock.imgur.search);
-            done();
-        });
     });
 
     describe('HipChatBot async error handling for Imgur', function () {

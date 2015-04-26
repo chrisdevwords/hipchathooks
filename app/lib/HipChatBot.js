@@ -153,7 +153,7 @@ HipChatBot.prototype.getSenderHandle = function (reqData) {
  * @returns {Object} - message object from a hipchat request
  */
 HipChatBot.prototype.getMessage = function (reqData) {
-    if (reqData.item) {
+    if (reqData && reqData.item) {
         return reqData.item.message || {};
     }
     return {};
