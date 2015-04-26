@@ -57,7 +57,7 @@ HipChatBot.prototype.parseReq = function (reqData) {
 
     if (!sender || !message) {
         def.reject(
-            _this.buildResponse(HipChatBot.ERROR_BAD_HOOK.replace('{n}', sender || 'guys'), 'red')
+            _this.buildResponse(_this.getBadHookMsg(sender), 'red')
         );
     } else {
         def.resolve(
@@ -78,15 +78,17 @@ HipChatBot.prototype.parseReq = function (reqData) {
  *
  */
 HipChatBot.prototype.parseGifReq = function (reqData, slug) {
+
     var msg = this.getMessageText(reqData);
     var _this = this;
     var query;
+
     if (msg) {
         query = this.stripSlug(msg, slug) + Imgur.EXT_GIF;
         return this.findImg(query, reqData);
     }
     return $.Deferred().reject(
-        _this.buildResponse(HipChatBot.ERROR_BAD_HOOK.replace('{n}', 'guys'), 'red')
+        _this.buildResponse(_this.getBadHookMsg(), 'red')
     ).promise();
 };
 
@@ -105,6 +107,7 @@ HipChatBot.prototype.findImg = function (query, reqData) {
     var def = $.Deferred();
     var handle = this.getSenderHandle(reqData);
     var errorMsg;
+
     imgur.getRandomFromSearch(encodeURIComponent(query))
         .done(function (resp) {
             def.resolve(_this.buildResponse(resp.link));
@@ -112,16 +115,13 @@ HipChatBot.prototype.findImg = function (query, reqData) {
         .fail(function (resp) {
             switch (resp.status) {
                 case 500 :
-                    errorMsg = HipChatBot.ERROR_500.replace('{n}', handle);
+                    errorMsg = _this.get500Msg(handle);
                     break;
                 case 200 :
-                    errorMsg = HipChatBot.ERROR_NO_RESULTS
-                        .replace('{n}', handle)
-                        .replace('{q}', unescape(resp.data.query).replace(Imgur.EXT_GIF, ''));
+                    errorMsg = _this.getNoResultsMsg(handle, resp.data.query);
                     break;
                 default :
-                    errorMsg = HipChatBot.ERROR_ROOT.replace('{n}', handle) +
-                                resp.data.error;
+                    errorMsg = _this.getCustomErrorMsg(handle, resp.data.error);
                     break;
             }
             def.reject(_this.buildResponse(errorMsg, 'red'));
@@ -205,5 +205,45 @@ HipChatBot.prototype.getMessageExploded = function (reqData, slug) {
     message = this.stripSlug(message, slug).toLowerCase();
     return message.split(' ');
 };
+
+/**
+ * Error message for no results found.
+ * @param {String} sender - the user's first name or handle
+ * @param {String} query
+ * @returns {String}
+ */
+HipChatBot.prototype.getNoResultsMsg = function (sender, query) {
+    return HipChatBot.ERROR_NO_RESULTS
+        .replace('{n}', sender)
+        .replace('{q}', unescape(query).replace(Imgur.EXT_GIF, ''));
+};
+
+/**
+ * Error message for missing or malformed WebHook data from HipChat
+ * @param {string} sender - the user's first name or handle
+ * @returns {String}
+ */
+HipChatBot.prototype.getBadHookMsg = function (sender) {
+    return HipChatBot.ERROR_BAD_HOOK.replace('{n}', sender || 'guys');
+};
+
+/**
+ * Error message for internal server error.
+ * @param {string} sender - the user's first name or handle
+ * @returns {String}
+ */
+HipChatBot.prototype.get500Msg = function (sender) {
+    return HipChatBot.ERROR_500.replace('{n}', sender);
+};
+
+/**
+ * Error message for other errors (403, invalid key, etc.).
+ * @param {String} sender - the user's first name or handle
+ * @param {String} error - custom error text you wish to append
+ * @returns {String}
+ */
+HipChatBot.prototype.getCustomErrorMsg = function (sender, error) {
+    return HipChatBot.ERROR_ROOT.replace('{n}', sender) + error;
+}
 
 module.exports = HipChatBot;
