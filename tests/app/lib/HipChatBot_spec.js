@@ -96,19 +96,23 @@ describe('HipChatBot', function () {
         });
 
         it('Resolves w/ error if passed a HipChat hook w/ bad JSON', function (done) {
+            var expectedMsg = HipChatBot.ERROR_BAD_HOOK.replace('{n}', 'guys');
+
             bot.parseReq(null)
                 .fail(function (resp) {
                     resp.color.should.equal('red');
-                    resp.message.should.equal(HipChatBot.ERROR_BAD_HOOK);
+                    resp.message.should.equal(expectedMsg);
                     done();
                 });
         });
 
         it('Resolves w/ error if passed a HipChat hook w/ missing data', function (done) {
+            var expectedMsg = HipChatBot.ERROR_BAD_HOOK.replace('{n}', 'guys');
+
             bot.parseReq({item:{}})
                 .fail(function (resp) {
                     resp.color.should.equal('red');
-                    resp.message.should.equal(HipChatBot.ERROR_BAD_HOOK);
+                    resp.message.should.equal(expectedMsg);
                     done();
                 });
         });

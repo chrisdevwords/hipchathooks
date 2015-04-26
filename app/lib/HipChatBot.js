@@ -57,7 +57,7 @@ HipChatBot.prototype.parseReq = function (reqData) {
 
     if (!sender || !message) {
         def.reject(
-            _this.buildResponse(HipChatBot.ERROR_BAD_HOOK, 'red')
+            _this.buildResponse(HipChatBot.ERROR_BAD_HOOK.replace('{n}', sender || 'guys'), 'red')
         );
     } else {
         def.resolve(
