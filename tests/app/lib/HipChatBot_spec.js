@@ -53,31 +53,71 @@ describe('HipChatBot', function () {
         done();
     });
 
+    it('Builds a HipChat response w/ defaults, requiring only a message', function (done) {
+        var response = bot.buildResponse(msgTxt);
+        response.should.be.an.Object;
+        response.message.should.equal(msgTxt);
+        response.color.should.equal('green');
+        response.notify.should.equal(false);
+        response['message_format'].should.equal('text');
+        done();
+    });
+
+    it('Builds a HipChat responses, with a message color', function (done) {
+        var response = bot.buildResponse(msgTxt, 'red');
+        response.color.should.equal('red');
+        done();
+    });
+
+    it('Builds a HipChat responses, with a notify flag', function (done) {
+        var response = bot.buildResponse(msgTxt, 'red', true);
+        response.notify.should.equal(true);
+        done();
+    });
+
+    it('Builds a HipChat responses, with a format', function (done) {
+        var response = bot.buildResponse(msgTxt, 'red', true, 'html');
+        response['message_format'].should.equal('html');
+        done();
+    });
+
     describe('HipChatBot async methods', function (done) {
-        beforeEach(function (done) {
-            sinon
-                .stub(request, 'get')
-                .yields(null, {statusCode: 200}, mock.imgur.search);
+
+        it('Resolves w/ a generic HipChat response object', function (done) {
             done();
         });
+
+        it('Resolves w/ error if passed a HipChat hook w/ bad JSON', function (done) {
+            bot.parseReq({})
+                .fail(function (resp) {
+                    resp.color.should.equal('red');
+                    resp.message.should.equal(HipChatBot.ERROR_BAD_HOOK);
+                    done();
+                });
+        });
+
+    });
+
+    describe('HipChatBot async calls to Imgur', function (done) {
 
         afterEach(function (done) {
             request.get.restore();
             done();
         });
 
-        it('Resolves w/ a generic HipChat response object', function (done) {
-            done();
-        });
-
         it('Resolves w/ an Image response object', function (done) {
+            sinon
+                .stub(request, 'get')
+                .yields(null, {statusCode: 200}, mock.imgur.search);
             done();
         });
 
         it('Resolves w/ a GIF response object', function (done) {
+            sinon
+                .stub(request, 'get')
+                .yields(null, {statusCode: 200}, mock.imgur.search);
             done();
         });
-
     });
 
     describe('HipChatBot async error handling for Imgur', function () {

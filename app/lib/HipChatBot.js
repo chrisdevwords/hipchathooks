@@ -7,20 +7,22 @@ var Imgur = require('./Imgur');
 function HipChatBot () {};
 
 /**
- * constants
- */
-
-/**
  * error message for empty search result.
  * @type {string}
  */
-HipChatBot.ERROR_NO_RESULTS = 'I couldn\'t find anything with that query. I suck.'
+HipChatBot.ERROR_NO_RESULTS = 'I couldn\'t find anything with that query. I suck.';
 
 /**
  * error message for 500.
  * @type {string}
  */
 HipChatBot.ERROR_500 = 'Hmmm... something\'s borked. Try again later...';
+
+/**
+ * error message for 500.
+ * @type {string}
+ */
+HipChatBot.ERROR_BAD_HOOK = 'Hmmm... something\'s borked. HipChat data looks funny.';
 
 /**
  * Generic request Parser for HipChat WebHooks
@@ -32,13 +34,20 @@ HipChatBot.ERROR_500 = 'Hmmm... something\'s borked. Try again later...';
  */
 HipChatBot.prototype.parseReq = function (reqData) {
 
+    var _this = this;
     var def = $.Deferred();
     var sender = this.getSenderHandle(reqData);
-    def.resolve({
-        color: 'green',
-        message: 'oh hey, ' + sender + '. it\'s a generic bot.',
-        'message_format': 'text'
-    });
+    var message = this.getMessageText(reqData);
+
+    if (!sender || !message) {
+        def.reject(
+            _this.buildResponse(HipChatBot.ERROR_BAD_HOOK, 'red')
+        );
+    } else {
+        def.resolve(
+            _this.buildResponse('oh hey, ' + sender + '. it\'s a generic bot.')
+        );
+    }
 
     return def.promise();
 };
@@ -68,17 +77,14 @@ HipChatBot.prototype.parseGifReq = function (reqData, slug) {
  */
 HipChatBot.prototype.findImg = function (query, reqData) {
 
+    var _this = this;
     var imgur = new Imgur(process.env.IMGUR_ID);
     var def = $.Deferred();
     var handle = this.getSenderHandle(reqData);
     var errorMsg = 'Sorry, ' + handle + '. ';
     imgur.getRandomFromSearch(encodeURIComponent(query))
         .done(function (resp) {
-            def.resolve({
-                color: 'green',
-                message: resp.link,
-                'message_format': 'text'
-            });
+            def.resolve(_this.buildResponse(resp.link));
         })
         .fail(function (resp) {
             switch (resp.status) {
@@ -92,14 +98,30 @@ HipChatBot.prototype.findImg = function (query, reqData) {
                     errorMsg += resp.data.error;
                     break;
             }
-            def.reject({
-                color: 'red',
-                message: errorMsg,
-                'message_format': 'text'
-            });
+            def.reject(_this.buildResponse(errorMsg, 'red'));
         });
 
     return def.promise();
+};
+
+/**
+ * Builds a response object to be sent to HipChat.
+ * @param {String} message
+ * @param {String} color - optional, defaults to green
+ * @param {Boolean} notify - optional, defaults to false
+ * @returns {Object} response
+ * @returns {String} response.color
+ * @returns {String} response.message
+ * @returns {String} response.message_format
+ * @returns {Boolean} response.notify
+ */
+HipChatBot.prototype.buildResponse = function (message, color, notify, format) {
+    return {
+        color: color || 'green',
+        message: message,
+        'message_format': format || 'text',
+        notify: !!notify
+    }
 };
 
 /**
@@ -122,7 +144,7 @@ HipChatBot.prototype.getSenderHandle = function (reqData) {
     if (msg.from && _.isString(msg.from.name)) {
         return msg.from.name.split(' ')[0];
     }
-    return 'guys';
+    return null;
 };
 
 /**
@@ -143,7 +165,7 @@ HipChatBot.prototype.getMessage = function (reqData) {
  * @returns {String} - message string from a HipChat request
  */
 HipChatBot.prototype.getMessageText = function (reqData) {
-    return this.getMessage(reqData).message || '';
+    return this.getMessage(reqData).message;
 };
 
 /**
