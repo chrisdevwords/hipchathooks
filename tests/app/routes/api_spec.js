@@ -90,30 +90,91 @@ describe('The API Endpoints', function () {
         describe('handle GET, listing usage instructions', function () {
 
             it('for /jif', function (done) {
+
+                var resJSON;
+                var exampleJSON;
+
                 supertest(server)
                     .get('/api/jif/')
                     .expect(200)
                     .end(function (err, res) {
                         should.not.exist(err);
                         res.text.should.be.a.String;
-                        //todo verify it's the chat hook for /jif
+                        resJSON = JSON.parse(res.text);
+                        exampleJSON = JSON.parse(resJSON.example);
+                        resJSON.should.be.an.Object;
+                        resJSON.msg.should.be.a.String;
+                        resJSON.example.should.be.a.String;
+                        exampleJSON.should.be.an.Object;
+                        exampleJSON.should.not.be.empty;
                         return done();
                     });
 
             });
 
             it('for /gif', function (done) {
+
+                var resJSON;
+                var exampleJSON;
+
                 supertest(server)
                     .get('/api/gif/')
                     .expect(200)
                     .end(function (err, res) {
                         should.not.exist(err);
                         res.text.should.be.a.String;
-                        //todo verify it's the chat hook for /jif
+                        resJSON = JSON.parse(res.text);
+                        exampleJSON = JSON.parse(resJSON.example);
+                        resJSON.should.be.an.Object;
+                        resJSON.msg.should.be.a.String;
+                        resJSON.example.should.be.a.String;
+                        exampleJSON.should.be.an.Object;
+                        exampleJSON.should.not.be.empty;
                         return done();
                     });
 
             });
+        });
+
+    });
+
+    describe('the DanBot endpoint: /dan', function () {
+
+        it('Accepts GET requests', function (done) {
+
+            var resJSON;
+            var exampleJSON;
+
+            supertest(server)
+                .get('/api/dan')
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    res.text.should.be.a.String;
+                    resJSON = JSON.parse(res.text);
+                    exampleJSON = JSON.parse(resJSON.example);
+                    resJSON.should.be.an.Object;
+                    resJSON.msg.should.be.a.String;
+                    resJSON.example.should.be.a.String;
+                    exampleJSON.should.be.an.Object;
+                    exampleJSON.should.not.be.empty;
+                    return done();
+                });
+
+        });
+
+        it('Accepts POST requests', function (done) {
+
+            supertest(server)
+                .post('/api/dan')
+                .send(JSON.parse(mock.hipChat.getHook('/dan')))
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    res.body.should.be.an.Object;
+                    return done();
+                });
+
         });
 
     });
