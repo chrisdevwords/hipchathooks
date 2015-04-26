@@ -4,6 +4,13 @@ var $ = require('jquery-deferred');
 var _ = require('underscore');
 var Imgur = require('./Imgur');
 
+/**
+ * Parses HipChat requests.
+ * Promises resolve with HipChat response objects,
+ * and fail with HipChat response objects.
+ * @see {@link https://www.hipchat.com/docs/apiv2/webhooks}
+ * @constructor
+ */
 function HipChatBot () {};
 
 /**
@@ -150,7 +157,7 @@ HipChatBot.prototype.getSenderHandle = function (reqData) {
 /**
  * finds the message object in the req body
  * @param {Object} reqData - hip chat request body
- * @returns {Object} - message object from a hipchat request
+ * @returns {Object} - message object from a HipChat request
  */
 HipChatBot.prototype.getMessage = function (reqData) {
     if (reqData && reqData.item) {

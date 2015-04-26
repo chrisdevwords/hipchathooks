@@ -103,6 +103,7 @@ describe('HipChatBot', function () {
                     done();
                 });
         });
+
         it('Resolves w/ error if passed a HipChat hook w/ missing data', function (done) {
             bot.parseReq({item:{}})
                 .fail(function (resp) {
