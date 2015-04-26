@@ -20,6 +20,12 @@ function Imgur (apiKey) {
 }
 
 /**
+ * append to query for GIF searches
+ * @type {string}
+ */
+Imgur.EXT_GIF = ' ext:gif';
+
+/**
  * Searches Imgur.com for images returning a promise.
  * The promise resolves with an array of objects.
  * If no images are found, promise resolves with an empty array.
