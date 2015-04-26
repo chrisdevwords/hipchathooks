@@ -9,12 +9,12 @@ module.exports = {
      * @returns {Object} obj - the parsed object
      * @returns {Error} obj.error - exception thrown if and when JSON fails to parse
      */
-    parseJSON : function (str) {
+    parseJSON: function (str) {
         var obj;
         try {
             obj = JSON.parse(str || '');
         } catch (error) {
-            obj = {error:error};
+            obj = {error: error};
         }
         return obj;
     },
@@ -24,7 +24,7 @@ module.exports = {
      * @param  {Array} arr
      * @return {*} The value of the random index
      */
-    getRandomIndex : function (arr) {
+    getRandomIndex: function (arr) {
         var index = Math.round(Math.random() * (arr.length - 1));
         return arr[index];
     },
@@ -36,8 +36,8 @@ module.exports = {
      * @param {*} value - the property you wish to find
      * @returns {*} the needle(s)
      */
-    filterBy : function (arr, field, value) {
-        var result = arr.filter(function( obj ) {
+    filterBy: function (arr, field, value) {
+        var result = arr.filter(function (obj) {
             return obj[field] === value;
         });
         return result;
@@ -50,9 +50,9 @@ module.exports = {
      * @param {*} value - the property you wish to find
      * @returns {*} the needle
      */
-    findBy : function (arr, field, value) {
+    findBy: function (arr, field, value) {
         var result = this.filterBy(arr, field, value);
-        return result[result.length-1];
+        return result[result.length - 1];
     }
 
 };
