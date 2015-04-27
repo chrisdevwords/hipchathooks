@@ -4,6 +4,7 @@ var YouTube = require('youtube-node');
 var HipChatBot = require('./HipChatBot');
 
 function TubeBot (apiKey) {
+    this.slug = '/tube';
     this.apiKey = apiKey;
 };
 
@@ -33,18 +34,19 @@ TubeBot.prototype.findTube = function (query, handle) {
 
     var cb = function (error, result) {
 
-        if (error) {
+        if (error || !result) {
             def.reject(
-                // really?
-                _this.buildResponse(
-                    _this.getNoResultsMsg(handle, query)
-                )
+                _this.buildResponse(_this.get500Msg(handle), 'red')
             );
-        } else {
+        } else if (result.items && result.items.length) {
             def.resolve(
                 _this.buildResponse(
                     _this.parseResultToLink(result)
                 )
+            );
+        } else {
+            def.reject(
+                _this.buildResponse(_this.getNoResultsMsg(handle, query), 'red')
             );
         }
     };
@@ -58,7 +60,7 @@ TubeBot.prototype.findTube = function (query, handle) {
 TubeBot.prototype.parseResultToLink = function (result) {
     var items = result.items;
     var random = items[Math.floor(Math.random() * items.length)];
-    return "https://youtube.com/watch?v=" + random.id.videoId;
+    return 'https://youtube.com/watch?v=' + random.id.videoId;
 };
 
 module.exports = TubeBot;
