@@ -1,7 +1,8 @@
 var should = require('should'),
     mock = require('../../mock'),
     util = require('../../../app/lib/util'),
-    TubeBot = require('../../../app/lib/TubeBot');
+    TubeBot = require('../../../app/lib/TubeBot'),
+    apiKey = require('../../config.conf.js').youtube.API_KEY;
 
 describe('TubeBot', function () {
 
@@ -14,8 +15,7 @@ describe('TubeBot', function () {
     var REG_URL_VALID = /https:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/;
 
     beforeEach(function () {
-        var key = 'AIzaSyC5aHd0uZMA5uA6wKtIJEBTuklIl_z2Uh4';
-        bot = new TubeBot(key);
+        bot = new TubeBot(apiKey);
         reqData = JSON.parse(mock.hipChat.getHook(slug + ' ' + msgTxt, name));
     });
 
