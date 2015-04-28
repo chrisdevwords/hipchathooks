@@ -2,6 +2,7 @@ var _ = require('underscore');
 var $ = require('jquery-deferred');
 var YouTube = require('youtube-node');
 var HipChatBot = require('./HipChatBot');
+var util = require('./util');
 
 function TubeBot (apiKey) {
     this.slug = '/tube';
@@ -59,7 +60,7 @@ TubeBot.prototype.findTube = function (query, handle) {
 
 TubeBot.prototype.parseResultToLink = function (result) {
     var items = result.items;
-    var random = items[Math.floor(Math.random() * items.length)];
+    var random = util.getRandomIndex(items);
     return 'https://youtube.com/watch?v=' + random.id.videoId;
 };
 
