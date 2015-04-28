@@ -11,6 +11,8 @@ function TubeBot (apiKey) {
 
 _.extend(TubeBot.prototype, HipChatBot.prototype);
 
+TubeBot.ERROR_INVALID_API_KEY = '';
+
 TubeBot.prototype.parseReq = function (reqData) {
 
     var msg = this.getMessageText(reqData);
@@ -37,7 +39,7 @@ TubeBot.prototype.findTube = function (query, handle) {
 
         if (error || !result) {
             def.reject(
-                _this.buildResponse(_this.get500Msg(handle), 'red')
+                _this.buildResponse(_this.getErrorMsg(error, handle), 'red')
             );
         } else if (result.items && result.items.length) {
             def.resolve(
@@ -56,6 +58,13 @@ TubeBot.prototype.findTube = function (query, handle) {
     youtube.search(query, 5, cb);
 
     return def.promise();
+};
+
+TubeBot.prototype.getErrorMsg = function (error, handle) {
+    if (util.findBy(error.errors || [], 'reason', 'keyInvalid')) {
+        return this.getCustomErrorMsg(handle, TubeBot.ERROR_INVALID_API_KEY);
+    }
+    return this.get500Msg(handle)
 };
 
 TubeBot.prototype.parseResultToLink = function (result) {
