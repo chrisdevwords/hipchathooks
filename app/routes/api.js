@@ -7,7 +7,7 @@ var HipChatBot = require('../lib/HipChatBot');
 
 var DanBot = HipChatBot; //require('../lib/DanBot');
 var VigodaBot = HipChatBot; //require('../lib/VigodaBot');
-var TubeBot = HipChatBot; //require('../lib/TubeBot');
+var TubeBot = require('../lib/TubeBot');
 
 /**
  * GifBot
