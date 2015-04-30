@@ -82,7 +82,7 @@ router.get('/tube', function (req, res) {
 });
 
 router.post('/tube',  function (req, res) {
-    var bot = new TubeBot();
+    var bot = new TubeBot(process.env.YOUTUBE_KEY || '');
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
