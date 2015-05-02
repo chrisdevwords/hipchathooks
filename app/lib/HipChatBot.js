@@ -6,42 +6,42 @@ var Imgur = require('./Imgur');
 
 /**
  * Parses HipChat requests.
- * Promises resolve with HipChat response objects,
- * and fail with HipChat response objects.
+ * Promises resolve and reject with HipChat response objects.
  * @see {@link https://www.hipchat.com/docs/apiv2/webhooks}
  * @constructor
+ * @class
  */
 function HipChatBot () {};
 
 /**
- * start every error with an apology...
+ * Start every error with an apology...
  * @type {string}
  */
 HipChatBot.ERROR_ROOT = 'Sorry, {n}. ';
 
 /**
- * error message for empty search result.
+ * Error message for empty search result.
  * @type {string}
  */
 HipChatBot.ERROR_NO_RESULTS = HipChatBot.ERROR_ROOT +
     'I couldn\'t find anything with the query: "{q}". I suck.';
 
 /**
- * error message for 500.
+ * Error message for 500.
  * @type {string}
  */
 HipChatBot.ERROR_500 = HipChatBot.ERROR_ROOT +
     'Something\'s borked. Try again later...';
 
 /**
- * error message for 500.
+ * Error message for 500.
  * @type {string}
  */
 HipChatBot.ERROR_BAD_HOOK = HipChatBot.ERROR_ROOT +
     'Something\'s borked. HipChat data looks funny.';
 
 /**
- * Generic request Parser for HipChat WebHooks
+ * Generic request parser for HipChat WebHooks.
  * Override this in subclasses.
  * Returns a promise that resolves with a generic HipChat message
  * Should reject with an error in subclassed implementations.
@@ -69,7 +69,7 @@ HipChatBot.prototype.parseReq = function (reqData) {
 };
 
 /**
- * Parses a chat message to return gif based on text after the slug
+ * Parses a chat message to return gif based on text after the slug.
  * Returns a promise that resolves with a HipChat message consisting of a link to an Imgur GIF.
  * Promise rejects with a HipChat message object containing an error indicating no GIFs were found.
  * @param {Object} reqData - the HipChat request body
@@ -93,7 +93,7 @@ HipChatBot.prototype.parseGifReq = function (reqData, slug) {
 };
 
 /**
- * Searches Imgur.com for an image, returning a promise.
+ * Searches Imgur API for an image, returning a promise.
  * The promise resolves with a HipChat response message containing a link to an Imgur image.
  * The promise rejects with a HipChat error response if no images could be found.
  * @param {String} query - what you're searching for
@@ -174,7 +174,7 @@ HipChatBot.prototype.getSenderHandle = function (reqData) {
 };
 
 /**
- * finds the message object in the req body
+ * Finds the message object in the HipChat request object.
  * @param {Object} reqData - hip chat request body
  * @returns {Object} - message object from a HipChat request
  */
@@ -186,7 +186,7 @@ HipChatBot.prototype.getMessage = function (reqData) {
 };
 
 /**
- * Finds the message string in the req body.
+ * Finds the message string in the HipChat request object.
  * @param {Object} reqData - hip chat request body
  * @returns {String} - message string from a HipChat request
  */
@@ -195,7 +195,8 @@ HipChatBot.prototype.getMessageText = function (reqData) {
 };
 
 /**
- * Finds the message string in the req body, removes the slug and separates it into lower case fragments
+ * Finds the message string in the HipChat request object,
+ * removes the slug and separates it into lowercase fragments
  * @param {Object} reqData - hip chat request body
  * @param {String} slug - optional, the slug to be removed from the message
  * @returns {Array}
@@ -219,7 +220,7 @@ HipChatBot.prototype.getNoResultsMsg = function (sender, query) {
 };
 
 /**
- * Error message for missing or malformed WebHook data from HipChat
+ * Builds an error message for missing or malformed WebHook data from HipChat.
  * @param {string} sender - the user's first name or handle
  * @returns {String}
  */
@@ -228,7 +229,7 @@ HipChatBot.prototype.getBadHookMsg = function (sender) {
 };
 
 /**
- * Error message for internal server error.
+ * Builds an error message for an internal server error.
  * @param {string} sender - the user's first name or handle
  * @returns {String}
  */
@@ -237,7 +238,7 @@ HipChatBot.prototype.get500Msg = function (sender) {
 };
 
 /**
- * Error message for other errors (403, invalid key, etc.).
+ * Builds an error message for other errors (403, invalid key, etc.).
  * @param {String} sender - the user's first name or handle
  * @param {String} error - custom error text you wish to append
  * @returns {String}
