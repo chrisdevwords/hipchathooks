@@ -1,8 +1,8 @@
-var _ = require('underscore');
-var $ = require('jquery-deferred');
-var YouTube = require('youtube-node');
-var HipChatBot = require('./HipChatBot');
-var util = require('./util');
+var _ = require('underscore'),
+    $ = require('jquery-deferred'),
+    YouTube = require('youtube-node'),
+    HipChatBot = require('./HipChatBot'),
+    util = require('./util');
 
 /**
  * Parses HipChat requests, searching youtube for links to videos.

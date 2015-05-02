@@ -1,148 +1,130 @@
 'use strict';
 
-var $ = require('jquery-deferred');
 var _ = require('underscore');
-var genBot = require('./GenericBot');
+var $ = require('jquery-deferred');
+var util = require('./util');
 var Imgur = require('./Imgur');
 var weather = require('weather-js');
+var model = require('../model/DanBotModel')
+var HipChatBot = require('./HipChatBot');
 
-var danBot = {
-    IMGUR_GALLERY : '5CoxY',
-    advice : [
-        'Oh hey, {handle}. Don\'t get married. Just kidding it\'s great.',
-        'Oh hey, {handle}. Don\'t eat street meat. Just kidding it\'s great.',
-        'Seriously. Don\'t have kids. {handle}, you know what I\'m talking about...',
-        '{handle}, pull my finger. C\'mon... Do it.',
-        'Have you seen CakeFarts? {handle} hasn\'t seen it, guys! Go to cakefarts.com. So funny, you guys.',
-        '{handle}, check out 2 girls 1 cup. So gross. Google it. Seriously.'
-    ]
+function DanBot (imgurAPIKey, slug) {
+    this.imgurApiKey = imgurAPIKey;
+    this.slug = slug || '/dan';
 };
 
-module.exports = _.extend(danBot, genBot, {
+_.extend(DanBot.prototype, HipChatBot.prototype);
 
-    parseReq : function (data) {
+DanBot.ERROR_NO_WEATHER = 'Oh hey sorry, {handle}. Couldn\'t get the weather. ' +
+    'Don\'t move to Connecticut just kidding it\'s great.';
 
-        var def;
-        var type = this.getType(data);
-        switch (type) {
-            case "picture":
-                return this.getPictureofDan(data);
-                break;
-            case 'weather':
-                return this.getWeather(data);
-                break;
-            default:
-                def = $.Deferred()
-                def.resolve({
-                    color: "green",
-                    message_prefix: "Dan Bot:",
-                    message: this.getResponseText(data, type),
-                    message_format: "text"
-                });
-                break;
-        }
-        return def.promise();
-    },
+DanBot.ERROR_NO_GIFS = 'Oh hey sorry, {handle}. No pictures of Dan right now. Try Connecticut.';
 
-    getType : function (reqData) {
-        var words = this.getMessageExploded(reqData, '/dan');
-        if (words.indexOf('advice') >= 0) {
-            return 'advice';
-        }
-        if (words.indexOf('weather') >= 0) {
-            return 'weather';
-        }
-        return 'picture';
-    },
-
-    getResponseText : function (reqData, type) {
-        var txt;
-        switch (type) {
-            case 'weather':
-                txt = this.getWeather(reqData);
-                break;
-            default:
-                txt = this.getAdvice(reqData);
-                break;
-        }
-        return txt;
-    },
-
-    getAdvice : function(reqData) {
-        var advice = this.advice[Math.floor(this.advice.length*Math.random())];
-        return advice.replace('{handle}', this.getSenderHandle(reqData));
-    },
-
-    getWeather : function (reqData) {
-
-        var def = $.Deferred();
-        var _this = this;
-        var handle = this.getSenderHandle(reqData);
-
-        weather.find({search: 'Connecticut', degreeType: 'F'}, function (err, result) {
-            if (err) {
-                def.reject({
-                    color : "red",
-                    message : 'Oh hey. Couldn\'t get the weather. Don\'t move to Connecticut just kidding it\'s great.',
-                    message_format: "text"
-                });
-            } else {
-                def.resolve({
-                    color : "green",
-                    message : _this.parseWeather(result, handle),
-                    message_format: "text"
-                });
-            }
-        });
-        return def.promise();
-    },
-
-    parseWeather : function (result, handle) {
-
-        var current = result[0].current;
-        var temp = +(current.feelslike || current.temperature);
-
-        if (temp >= 90) {
-            return 'So sweaty, ' + handle + '. Had to sleep on the couch. Better call in sick.';
-        }
-        if (temp >= 80) {
-            return 'So sweaty, ' + handle + '. Seriously. Metro North is so gross.';
-        }
-        if (temp >= 75) {
-            return 'Getting kind of sweaty, ' + handle + '. Too hot for rollerblading. Might be a good day for Hershey Park.';
-        }
-        if (temp >= 65) {
-            return 'Should be a good day for Hershey Park, {handle}. Or Rollerblading. Better leave early.';
-        }
-        if (temp >= 45) {
-            return 'Warm enough for rollerblading. Not quite nice enough for Hershey Park. You know what I\'m talking about.';
-        }
-
-        return 'Way too cold for Rollerblading, but they\'re turning up the heat on the Metro North. So sweaty. Better sleep on the couch.';
-    },
-
-
-    getPictureofDan : function (reqData) {
-
-        var def = $.Deferred();
-        var imgur = new Imgur(process.env.IMGUR_ID);
-        var handle = this.getSenderHandle(reqData);
-
-        imgur.getRandomFromAlbum(this.IMGUR_GALLERY)
-            .done(function (gif){
-                def.resolve({
-                    color: "green",
-                    message: gif.link,
-                    message_format: "text"
-                });
-            }).fail(function () {
-                def.reject({
-                    color: "red",
-                    message_prefix: "Dan Bot:",
-                    message: 'Oh, hey. Sorry, ' + handle + ' no pictures of Dan right now. Try Connecticut.',
-                    message_format: "text"
-                });
-            });
-        return def.promise();
+DanBot.prototype.parseReq = function (reqData) {
+    var def;
+    var type = this.getType(reqData);
+    switch (type) {
+        case 'picture':
+            return this.getPictureofDan(reqData);
+            break;
+        case 'weather':
+            return this.getWeather(reqData);
+            break;
+        default:
+            def = $.Deferred();
+            def.resolve(
+                this.buildResponse(
+                    this.getResponseText(reqData, type)
+                )
+            );
+            break;
     }
-});
+    return def.promise();
+};
+
+DanBot.prototype.getType = function (reqData) {
+    var words = this.getMessageExploded(reqData, '/dan');
+    if (words.indexOf('advice') >= 0) {
+        return 'advice';
+    }
+    if (words.indexOf('weather') >= 0) {
+        return 'weather';
+    }
+    return 'picture';
+};
+
+DanBot.prototype.getResponseText = function (reqData, type) {
+    var txt;
+    switch (type) {
+        case 'weather':
+            txt = this.getWeather(reqData);
+            break;
+        default:
+            txt = this.getAdvice(reqData);
+            break;
+    }
+    return txt;
+};
+
+DanBot.prototype.getAdvice = function (reqData) {
+    var advice = util.getRandomIndex(model.advice);
+    return advice.replace('{handle}', this.getSenderHandle(reqData));
+};
+
+DanBot.prototype.getWeather = function (reqData) {
+
+    var def = $.Deferred();
+    var _this = this;
+    var handle = this.getSenderHandle(reqData);
+
+    weather.find({search: 'Connecticut', degreeType: 'F'}, function (err, result) {
+        if (err) {
+            def.reject(_this.buildResponse(_this.getWeatherErrorMsg(handle), 'red'));
+        } else {
+            if (result && result.length) {
+                def.resolve(_this.buildResponse(_this.parseWeather(result, handle)));
+            } else {
+                def.reject(_this.buildResponse(_this.getWeatherErrorMsg(handle), 'red'));
+            }
+        }
+    });
+
+    return def.promise();
+};
+
+DanBot.prototype.parseWeather = function (result, handle) {
+    var current = result[0].current;
+    var temp = +(current.feelslike || current.temperature);
+    model.getTemperatureMsg(temp).replace('{handle}', handle);
+};
+
+DanBot.prototype.getWeatherErrorMsg = function (handle) {
+    return DanBot.ERROR_NO_WEATHER.replace('{handle}', handle);
+};
+
+DanBot.prototype.getPictureofDan = function (reqData) {
+
+    var _this = this;
+    var def = $.Deferred();
+    var imgur = new Imgur(this.imgurApiKey);
+    var handle = this.getSenderHandle(reqData);
+
+    imgur.getRandomFromAlbum(model.imgurGalleryId)
+        .done(function (gif) {
+            def.resolve(
+                _this.buildResponse(gif.link)
+            );
+        }).fail(function () {
+            def.reject(
+                _this.buildResponse(_this.getGifErrorMsg(handle))
+            );
+        });
+
+    return def.promise();
+};
+
+DanBot.prototype.getGifErrorMsg = function (handle) {
+    return DanBot.ERROR_NO_GIFS.replace('{handle}', handle);
+};
+
+module.exports = DanBot;
