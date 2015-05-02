@@ -2,7 +2,9 @@ var should = require('should'),
     mock = require('../../mock'),
     util = require('../../../app/lib/util'),
     TubeBot = require('../../../app/lib/TubeBot'),
-    apiKey = require('../../config.conf.js').youtube.API_KEY;
+    config = require('../../config.conf.js'),
+    REG_URL_VALID = config.youtube.REG_VALID_URL,
+    apiKey = config.youtube.API_KEY;
 
 describe('TubeBot', function () {
 
@@ -12,7 +14,6 @@ describe('TubeBot', function () {
     var name = firstName + ' Jones';
     var slug = '/tube';
     var msgTxt = 'stuff';
-    var REG_URL_VALID = /https:\/\/(?:www\.)?youtube.*watch\?v=([a-zA-Z0-9\-_]+)/;
 
     beforeEach(function () {
         bot = new TubeBot(apiKey);

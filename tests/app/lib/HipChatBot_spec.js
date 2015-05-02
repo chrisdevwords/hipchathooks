@@ -2,16 +2,17 @@ var should = require('should'),
     sinon = require('sinon'),
     request = require('request'),
     mock = require('../../mock'),
+    REG_URL_VALID = require('../../config.conf.js').imgur.REG_VALID_URL,
     HipChatBot = require('../../../app/lib/HipChatBot');
 
 describe('HipChatBot', function () {
+
     var bot;
     var reqData;
     var firstName = 'Tester';
     var name = firstName + ' Jones';
     var slug = '/gif';
     var msgTxt = 'testing a message';
-    var REG_URL_VALID = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
     beforeEach(function () {
         bot = new HipChatBot();

@@ -5,7 +5,7 @@ var sinon = require('sinon');
 var server = require('../../../server');
 var request = require('request');
 var mock = require('../../mock');
-var REG_URL_VALID = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+var config = require('../../config.conf.js');
 
 describe('The API Endpoints', function () {
 
@@ -64,7 +64,7 @@ describe('The API Endpoints', function () {
                         should.not.exist(err);
                         res.body.should.be.an.Object;
                         res.body.message.should.be.a.String;
-                        REG_URL_VALID.test(res.body.message).should.equal(true);
+                        config.imgur.REG_VALID_URL.test(res.body.message).should.equal(true);
                         return done();
                     });
 
@@ -79,7 +79,7 @@ describe('The API Endpoints', function () {
                         should.not.exist(err);
                         res.body.should.be.an.Object;
                         res.body.message.should.be.a.String;
-                        REG_URL_VALID.test(res.body.message).should.equal(true);
+                        config.imgur.REG_VALID_URL.test(res.body.message).should.equal(true);
                         return done();
                     });
 
