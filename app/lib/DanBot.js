@@ -72,7 +72,7 @@ DanBot.prototype.parseReq = function (reqData) {
  * @returns {string}
  */
 DanBot.prototype.getResponseType = function (reqData) {
-    var msg = this.getMessage(reqData).split(this.slug).pop().toLowerCase();
+    var msg = this.getMessageText(reqData).split(this.slug).pop().toLowerCase();
     if (msg.indexOf('weather') > -1) {
         return 'weather';
     }
