@@ -1,0 +1,80 @@
+[
+  {
+    "location": {
+      "name": "Connecticut, CT",
+      "lat": "41.574",
+      "long": "-72.738",
+      "timezone": "-4",
+      "alert": "",
+      "degreetype": "F",
+      "imagerelativeurl": "http://blob.weather.microsoft.com/static/weather4/en-us/"
+    },
+    "current": {
+      "temperature": "52",
+      "skycode": "32",
+      "skytext": "Sunny",
+      "date": "2015-05-03",
+      "observationtime": "08:26:38",
+      "observationpoint": "Connecticut",
+      "feelslike": "52",
+      "humidity": "70",
+      "winddisplay": "3 mph Southwest",
+      "day": "Sunday",
+      "shortday": "Sun",
+      "windspeed": "3 mph",
+      "imageUrl": "http://blob.weather.microsoft.com/static/weather4/en-us/law/32.gif"
+    },
+    "forecast": [
+      {
+        "low": "43",
+        "high": "74",
+        "skycodeday": "32",
+        "skytextday": "Sunny",
+        "date": "2015-05-03",
+        "day": "Sunday",
+        "shortday": "Sun",
+        "precip": "10"
+      },
+      {
+        "low": "55",
+        "high": "79",
+        "skycodeday": "34",
+        "skytextday": "Mostly Sunny",
+        "date": "2015-05-04",
+        "day": "Monday",
+        "shortday": "Mon",
+        "precip": "0"
+      },
+      {
+        "low": "53",
+        "high": "74",
+        "skycodeday": "28",
+        "skytextday": "Mostly Cloudy",
+        "date": "2015-05-05",
+        "day": "Tuesday",
+        "shortday": "Tue",
+        "precip": "40"
+      },
+      {
+        "low": "50",
+        "high": "73",
+        "skycodeday": "30",
+        "skytextday": "Partly Sunny",
+        "date": "2015-05-06",
+        "day": "Wednesday",
+        "shortday": "Wed",
+        "precip": "0"
+      },
+      {
+        "low": "48",
+        "high": "73",
+        "skycodeday": "34",
+        "skytextday": "Mostly Sunny",
+        "date": "2015-05-07",
+        "day": "Thursday",
+        "shortday": "Thu",
+        "precip": "0"
+      }
+    ]
+  }
+]

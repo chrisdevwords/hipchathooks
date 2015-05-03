@@ -4,6 +4,7 @@ var imgurServiceErrors = require('./imgurServiceErrors');
 var youtubeSearch = require('./youtubeSearch');
 var youtubeEmptySearch = require('./youtubeEmptySearch');
 var youtubeBadKey = require('./youtubeInvalidKey');
+var weatherDataMSN = require('./weatherDataMSN');
 var webHook = require('./webHook');
 
 module.exports = {
@@ -23,5 +24,8 @@ module.exports = {
             emptySearch: JSON.stringify(youtubeEmptySearch)
         },
         search: JSON.stringify(youtubeSearch)
+    },
+    weatherMSN: {
+        connecticut: JSON.stringify(weatherDataMSN)
     }
 };

@@ -1,6 +1,10 @@
+var $ = require('jquery-deferred');
+var util = require('../lib/util');
+
 module.exports = {
 
     imgurGalleryId: '5CoxY',
+
     advice: [
         'Oh hey, {handle}. Don\'t get married. Just kidding it\'s great.',
         'Oh hey, {handle}. Don\'t eat street meat. Just kidding it\'s great.',
@@ -10,6 +14,28 @@ module.exports = {
             'Go to cakefarts.com. So funny, you guys.',
         '{handle}, check out 2 girls 1 cup. So gross. Google it. Seriously.'
     ],
+
+    getAdvice: function (handle) {
+        var def = $.Deferred();
+        def.resolve({
+            success: true,
+            text: util.getRandomIndex(this.advice).replace('{handle}', handle || 'Guys')
+        });
+        return def.promise();
+    },
+
+    getWeatherReport: function (data, handle) {
+        var def = $.Deferred();
+        var current = data.current || {};
+        var temp = +(current.feelslike || current.temperature);
+        var msg = this.getTemperatureMsg(temp);
+        def.resolve({
+            success: true,
+            text: msg.replace('{handle}', handle || 'Guys')
+        });
+        return def.promise();
+    },
+
     getTemperatureMsg: function (temp) {
 
         if (temp >= 90) {
