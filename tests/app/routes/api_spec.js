@@ -249,7 +249,7 @@ describe('The API Endpoints', function () {
 
             supertest(server)
                 .post('/api/dan')
-                .send(JSON.parse(mock.hipChat.getHook('/dan')))
+                .send(JSON.parse(mock.hipChat.getHook('/dan advice')))
                 .expect(200)
                 .end(function (err, res) {
                     should.not.exist(err);

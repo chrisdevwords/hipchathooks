@@ -5,7 +5,7 @@ var router = express.Router();
 var mockHook = require('../../tests/mock/webHook');
 var HipChatBot = require('../lib/HipChatBot');
 
-var DanBot = HipChatBot; //require('../lib/DanBot');
+var DanBot = require('../lib/DanBot');
 var VigodaBot = HipChatBot; //require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
 
@@ -22,7 +22,7 @@ router.get('/gif', function (req, res) {
 });
 
 router.post('/gif', function (req, res) {
-    var bot = new HipChatBot();
+    var bot = new HipChatBot(process.env.IMGUR_ID || '');
     bot.parseGifReq(req.body, '/gif')
         .always(function (resp) {
             res.json(resp)
@@ -42,7 +42,7 @@ router.get('/jif', function (req, res) {
 });
 
 router.post('/jif', function (req, res) {
-    var bot = new HipChatBot();
+    var bot = new HipChatBot(process.env.IMGUR_ID || '');
     bot.parseGifReq(req.body, '/jif')
         .always(function (resp) {
             res.json(resp)
@@ -102,7 +102,7 @@ router.get('/dan', function (req, res) {
 })
 
 router.post('/dan',  function (req, res) {
-    var bot = new DanBot();
+    var bot = new DanBot(process.env.IMGUR_ID || '');
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);

@@ -11,7 +11,9 @@ var Imgur = require('./Imgur');
  * @constructor
  * @class
  */
-function HipChatBot () {};
+function HipChatBot (imgurID) {
+    this.imgurID = imgurID;
+};
 
 /**
  * Start every error with an apology...
@@ -103,7 +105,7 @@ HipChatBot.prototype.parseGifReq = function (reqData, slug) {
 HipChatBot.prototype.findImg = function (query, reqData) {
 
     var _this = this;
-    var imgur = new Imgur(process.env.IMGUR_ID);
+    var imgur = new Imgur(this.imgurID);
     var def = $.Deferred();
     var handle = this.getSenderHandle(reqData);
     var errorMsg;
