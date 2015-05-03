@@ -8,6 +8,7 @@ var Imgur = require('./Imgur');
  * Parses HipChat requests.
  * Promises resolve and reject with HipChat response objects.
  * @see {@link https://www.hipchat.com/docs/apiv2/webhooks}
+ * @param {String} imgurID - needed for calls to Imgur API.
  * @constructor
  * @class
  */
