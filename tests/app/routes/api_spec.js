@@ -208,7 +208,7 @@ describe('The API Endpoints', function () {
 
             supertest(server)
                 .post('/api/vigoda')
-                .send(JSON.parse(mock.hipChat.getHook('/vigoda')))
+                .send(JSON.parse(mock.hipChat.getHook('/vigoda sting')))
                 .expect(200)
                 .end(function (err, res) {
                     should.not.exist(err);

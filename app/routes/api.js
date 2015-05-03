@@ -6,7 +6,7 @@ var mockHook = require('../../tests/mock/webHook');
 var HipChatBot = require('../lib/HipChatBot');
 
 var DanBot = require('../lib/DanBot');
-var VigodaBot = HipChatBot; //require('../lib/VigodaBot');
+var VigodaBot = require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
 
 /**
