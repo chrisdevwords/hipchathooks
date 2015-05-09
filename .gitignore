@@ -28,6 +28,8 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 .env
+#https://github.com/cainus/node-coveralls#running-locally
+.coveralls.yml
 
 #IDE files
 .idea/
