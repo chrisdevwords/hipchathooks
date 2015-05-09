@@ -1,4 +1,4 @@
-# hipchathooks
+# hipchathooks [![Build Status](https://travis-ci.org/chrisdevwords/hipchathooks.svg?branch=master)](https://travis-ci.org/chrisdevwords/hipchathooks)
 [Endpoints to use for hipchat webhooks and integrations](https://hipchathooks.herokuapp.com).
 
 ## Running locally
@@ -39,4 +39,3 @@ YOU_TUBE_KEY="xxxx"
 Read [How to create a HipChat webhook](https://www.hipchat.com/docs/apiv2/method/create_webhook). 
 And [see also](https://github.com/charltoons/hipchatter#hipchattercreate_webhook).
 
-[![Coverage Status](https://coveralls.io/repos/chrisdevwords/hipchathooks/badge.svg)](https://coveralls.io/r/chrisdevwords/hipchathooks)
