@@ -1,11 +1,11 @@
 {
   "name": "hipchathooks",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "a bunch of endpoints to search various apis for hipchat webhooks",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "npm run test-node",
-    "test-node": "mocha -R spec ./tests/index.js",
+    "test": "npm run test:node",
+    "test:node": "NODE_ENV=test istanbul cover --report html node_modules/.bin/_mocha --recursive -- -R spec tests/**/*_spec.js",
     "start": "node index",
     "dev": "nodemon index"
   },
@@ -33,7 +33,7 @@
     "express": "^4.12.2",
     "jquery-deferred": "^0.3.0",
     "morgan": "^1.5.1",
-    "path": "^0.11.14",
+    "request": "^2.55.0",
     "swig": "^1.4.2",
     "underscore": "^1.8.2",
     "weather": "^0.1.0",
@@ -42,8 +42,10 @@
   },
   "devDependencies": {
     "chai": "^2.1.1",
+    "istanbul": "^0.3.13",
     "mocha": "^2.2.0",
     "should": "^5.1.0",
+    "sinon": "^1.14.1",
     "supertest": "^0.15.0"
   }
 }

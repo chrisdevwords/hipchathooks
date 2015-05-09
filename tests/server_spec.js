@@ -1,33 +1,35 @@
 
 var should = require('should');
 var request = require('supertest');
-
-var server = require('../index');
+var sinon = require('sinon');
+var server = require('../server');
 
 describe('Web Server', function () {
 
-    it('Accepts GET requests', function (done) {
-
+    it('Handles 404s', function (done) {
         request(server)
-            .get('/api')
-            .expect(200)
+            .get('/bork')
+            .expect(404)
             .end(function (err, res) {
                 should.not.exist(err);
                 res.text.should.be.a.String;
-                res.text.should.equal("oh hey. it's the api.");
                 return done();
             });
-
     });
 
-    it('Accepts POST requests', function (done) {
+    it('Displays an error page for 500s', function (done) {
+
+        sinon.stub(server, 'get', function () {
+            new Error('break damnit!');
+        });
 
         request(server)
-            .post('/api')
-            .expect(200)
+            .get('/')
+            .expect(500)
             .end(function (err, res) {
                 should.not.exist(err);
-                res.body.should.be.an.Object;
+                res.text.should.be.a.String;
+                server.get.restore();
                 return done();
             });
 
