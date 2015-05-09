@@ -64,7 +64,7 @@ module.exports = {
     /**
      * Based on temperature, returns a weather Report message (unpersonalized) from Dan.
      * @param {Number} temp
-     * @returns {string}
+     * @returns {String}
      */
     getTemperatureMsg: function (temp) {
 
