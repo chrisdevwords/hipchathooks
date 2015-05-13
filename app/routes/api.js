@@ -6,6 +6,7 @@ var mockHook = require('../../tests/mock/webHook');
 var HipChatBot = require('../lib/HipChatBot');
 
 var DanBot = require('../lib/DanBot');
+var PSIBot = require('../lib/PSIBot');
 var VigodaBot = require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
 
@@ -83,6 +84,26 @@ router.get('/tube', function (req, res) {
 
 router.post('/tube',  function (req, res) {
     var bot = new TubeBot(process.env.YOUTUBE_KEY || '');
+    bot.parseReq(req.body)
+        .always(function (msg) {
+            res.send(msg);
+        });
+});
+
+/**
+ * PSIBot
+ */
+router.get('/psi', function (req, res) {
+    res.json({
+        status: 200,
+        msg: 'Hit this endpoint with POST for PSIBot.' +
+        ' Use the example data for testing in Chrome DHC or Postman.',
+        example: mockHook.getHook('/psi html5rocks.com', 'Your Name')
+    });
+});
+
+router.post('/psi',  function (req, res) {
+    var bot = new PSIBot('');
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
