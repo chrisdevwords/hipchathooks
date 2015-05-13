@@ -23,7 +23,8 @@ PSIBot.prototype.parseReq = function (reqData) {
         if (err) {
             def.reject(
                 _this.buildResponse(
-                    _this.getCustomErrorMsg(sender, err.message)
+                    _this.getCustomErrorMsg(sender, err.message),
+                    'red'
                 )
             );
         } else {
@@ -55,8 +56,9 @@ PSIBot.prototype.buildPSIResponse = function (sender, data) {
 
 PSIBot.prototype.buildResponseMsg = function (sender, data) {
 
-    return 'Well, ' + sender + '. ' +
-        data.id + ' has a PSI score of: ' + data.score + '.'
+    return '<p>Well, ' + sender + '. ' +
+        data.id + ' has a PSI score of: ' + data.score + '.</p>' +
+        '<pre>' + JSON.stringify(data.pageStats) + '</pre>';
 };
 
 module.exports = PSIBot;
