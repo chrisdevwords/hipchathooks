@@ -53,9 +53,9 @@ module.exports = {
                         'DUMBO chapter. Don\'t install this just kidding it\'s great.'
                 },
                 {
-                    'slug': '/psi',
-                    'name': 'PSIBot',
-                    'endpoint': stubUrl + 'api/psi',
+                    'slug': '/perf',
+                    'name': 'PerfBot',
+                    'endpoint': stubUrl + 'api/perf',
                     'description': 'Google PSI rating for any website. ' +
                     'This one is very much a work in progress.'
                 }

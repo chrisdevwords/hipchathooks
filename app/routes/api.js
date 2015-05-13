@@ -6,7 +6,7 @@ var mockHook = require('../../tests/mock/webHook');
 var HipChatBot = require('../lib/HipChatBot');
 
 var DanBot = require('../lib/DanBot');
-var PSIBot = require('../lib/PSIBot');
+var PerfBot = require('../lib/PerfBot');
 var VigodaBot = require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
 
@@ -93,7 +93,7 @@ router.post('/tube',  function (req, res) {
 /**
  * PSIBot
  */
-router.get('/psi', function (req, res) {
+router.get('/perf', function (req, res) {
     res.json({
         status: 200,
         msg: 'Hit this endpoint with POST for PSIBot.' +
@@ -102,8 +102,8 @@ router.get('/psi', function (req, res) {
     });
 });
 
-router.post('/psi',  function (req, res) {
-    var bot = new PSIBot('');
+router.post('/perf',  function (req, res) {
+    var bot = new PerfBot('');
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);

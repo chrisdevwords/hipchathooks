@@ -3,14 +3,14 @@ var _ = require('underscore'),
     HipChatBot = require('./HipChatBot'),
     psi = require('psi');
 
-function PSIBot (apiKey, slug) {
-    this.slug = slug || '/psi';
+function PerfBot (apiKey, slug) {
+    this.slug = slug || '/perf';
     this.apiKey = apiKey;
 }
 
-_.extend(PSIBot.prototype, HipChatBot.prototype);
+_.extend(PerfBot.prototype, HipChatBot.prototype);
 
-PSIBot.prototype.parseReq = function (reqData) {
+PerfBot.prototype.parseReq = function (reqData) {
 
     var def = $.Deferred();
     var msg = this.getMessageText(reqData);
@@ -29,14 +29,14 @@ PSIBot.prototype.parseReq = function (reqData) {
             );
         } else {
             def.resolve(
-                _this.buildPSIResponse(sender, data)
+                _this.buildPerfResponse(sender, data)
             );
         }
     });
     return def.promise();
 };
 
-PSIBot.prototype.buildPSIResponse = function (sender, data) {
+PerfBot.prototype.buildPerfResponse = function (sender, data) {
 
     var color = 'red';
 
@@ -54,11 +54,11 @@ PSIBot.prototype.buildPSIResponse = function (sender, data) {
     );
 };
 
-PSIBot.prototype.buildResponseMsg = function (sender, data) {
+PerfBot.prototype.buildResponseMsg = function (sender, data) {
 
     return '<p>Well, ' + sender + '. ' +
         data.id + ' has a PSI score of: ' + data.score + '.</p>' +
         '<pre>' + JSON.stringify(data.pageStats) + '</pre>';
 };
 
-module.exports = PSIBot;
+module.exports = PerfBot;
