@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     $ = require('jquery-deferred'),
     HipChatBot = require('./HipChatBot'),
-    psi = require('psi');
+    WebPageTest = require('webpagetest');
 
 function PerfBot (apiKey, slug) {
     this.slug = slug || '/perf';
@@ -17,8 +17,8 @@ PerfBot.prototype.parseReq = function (reqData) {
     var query = this.stripSlug(msg, this.slug);
     var sender = this.getSenderHandle(reqData);
     var _this = this;
-
-    psi(query, function (err, data) {
+    var wpt = new WebPageTest('www.webpagetest.org', this.apiKey);
+    wpt.runTest(query, {pageSpeed: true}, function (err, data) {
 
         if (err) {
             def.reject(
@@ -28,9 +28,20 @@ PerfBot.prototype.parseReq = function (reqData) {
                 )
             );
         } else {
-            def.resolve(
-                _this.buildPerfResponse(sender, data)
-            );
+            if (data.statusCode  == 200) {
+                def.resolve(
+                    _this.buildResponse(data.data.userUrl)
+                );
+            } else {
+                def.reject(
+                    _this.buildResponse(
+                        _this.getCustomErrorMsg(sender, data.statusText),
+                        'red'
+                    )
+                );
+            }
+
+
         }
     });
     return def.promise();

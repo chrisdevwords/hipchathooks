@@ -103,7 +103,7 @@ router.get('/perf', function (req, res) {
 });
 
 router.post('/perf',  function (req, res) {
-    var bot = new PerfBot('');
+    var bot = new PerfBot(process.env.WEBPAGE_TEST_KEY);
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
