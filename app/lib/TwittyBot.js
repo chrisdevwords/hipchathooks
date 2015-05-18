@@ -16,6 +16,7 @@ _.extend(TwittyBot.prototype, HipChatBot.prototype);
 TwittyBot.prototype.parseReq = function (reqData) {
     var def = $.Deferred();
     var twitter = new Twitter(this.apiCreds);
+    var sender = this.getSenderHandle(reqData);
     var queryData = this.buildQueryData(reqData);
     var _this = this;
     twitter.get('search/tweets', queryData, function (error, tweets, resp) {
@@ -24,8 +25,8 @@ TwittyBot.prototype.parseReq = function (reqData) {
                 error.message,
                 'red'
             ));
-        } else {
-            //*
+        } else if (tweets && tweets.statuses.length) {
+            /*
             def.resolve(util.getRandomIndex(tweets.statuses));
             /*/
             def.resolve(_this.buildResponse(
@@ -35,7 +36,11 @@ TwittyBot.prototype.parseReq = function (reqData) {
                 'html'
             ));
             //*/
-
+        } else {
+            def.reject(_this.buildResponse(
+                _this.getNoResultsMsg(sender, queryData.q),
+                'yellow'
+            ));
         }
     });
     return def.promise();
