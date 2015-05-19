@@ -9,6 +9,7 @@ var DanBot = require('../lib/DanBot');
 var PerfBot = require('../lib/PerfBot');
 var VigodaBot = require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
+var TwittyBot = require('../lib/TwittyBot');
 
 /**
  * GifBot
@@ -109,6 +110,32 @@ router.post('/perf',  function (req, res) {
             res.send(msg);
         });
 });
+
+/**
+ * TwittyBot
+ */
+router.get('/twitty', function (req, res) {
+    res.json({
+        status: 200,
+        msg: 'Hit this endpoint with POST for TwittyBot.' +
+        ' Use the example data for testing in Chrome DHC or Postman.',
+        example: mockHook.getHook('/twitty #lol', 'Your Name')
+    });
+});
+
+router.post('/twitty',  function (req, res) {
+    var bot = new TwittyBot({
+        consumer_key: process.env.TWITTER_KEY || '',
+        consumer_secret: process.env.TWITTER_SECRET ||'',
+        access_token_key: '',
+        access_token_secret: ''
+    });
+    bot.parseReq(req.body)
+        .always(function (msg) {
+            res.send(msg);
+        });
+});
+
 
 /**
  * DanBot
