@@ -49,8 +49,7 @@ TwittyBot.prototype.parseReq = function (reqData) {
 TwittyBot.prototype.buildQueryData = function (reqData) {
     var query = this.stripSlug(this.getMessageText(reqData), this.slug);
     return {
-        q: query,
-        screen_name : 'poopsmagee'
+        q: query
     }
 };
 

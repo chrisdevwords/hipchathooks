@@ -179,6 +179,47 @@ describe('The API Endpoints', function () {
 
     });
 
+    describe('the TwittyBot endpoint: /twitty', function () {
+
+        it('Accepts GET requests', function (done) {
+
+            var resJSON;
+            var exampleJSON;
+
+            supertest(server)
+                .get('/api/twitty')
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    res.text.should.be.a.String;
+                    resJSON = JSON.parse(res.text);
+                    exampleJSON = JSON.parse(resJSON.example);
+                    resJSON.should.be.an.Object;
+                    resJSON.msg.should.be.a.String;
+                    resJSON.example.should.be.a.String;
+                    exampleJSON.should.be.an.Object;
+                    exampleJSON.should.not.be.empty;
+                    return done();
+                });
+
+        });
+
+        it('Accepts POST requests', function (done) {
+
+            supertest(server)
+                .post('/api/twitty')
+                .send(JSON.parse(mock.hipChat.getHook('/twitty #lol')))
+                .expect(200)
+                .end(function (err, res) {
+                    should.not.exist(err);
+                    res.body.should.be.an.Object;
+                    return done();
+                });
+
+        });
+
+    });
+
     describe('the VigodaBot endpoint: /vigoda', function () {
 
         it('Accepts GET requests', function (done) {

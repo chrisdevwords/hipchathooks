@@ -46,6 +46,13 @@ module.exports = {
                 },
 
                 {
+                    'slug': '/twitty',
+                    'name': 'TwittyBot',
+                    'endpoint': stubUrl + 'api/twitty',
+                    'description': 'You can call him Conway. Searches Twitter for tweets.'
+                },
+
+                {
                     'slug': '/dan',
                     'name': 'DanBot',
                     'endpoint': stubUrl + 'api/dan',
