@@ -7,6 +7,7 @@ var HipChatBot = require('../lib/HipChatBot');
 
 var DanBot = require('../lib/DanBot');
 var PerfBot = require('../lib/PerfBot');
+var PSIBot = require('../lib/PSIBot');
 var VigodaBot = require('../lib/VigodaBot');
 var TubeBot = require('../lib/TubeBot');
 var TwittyBot = require('../lib/TwittyBot');
@@ -92,9 +93,29 @@ router.post('/tube',  function (req, res) {
 });
 
 /**
- * PSIBot
+ * PerfBot
  */
 router.get('/perf', function (req, res) {
+    res.json({
+        status: 200,
+        msg: 'Hit this endpoint with POST for PerfBot.' +
+        ' Use the example data for testing in Chrome DHC or Postman.',
+        example: mockHook.getHook('/perf html5rocks.com', 'Your Name')
+    });
+});
+
+router.post('/perf',  function (req, res) {
+    var bot = new PerfBot(process.env.WEBPAGE_TEST_KEY);
+    bot.parseReq(req.body)
+        .always(function (msg) {
+            res.send(msg);
+        });
+});
+
+/**
+ * PSIBot
+ */
+router.get('/psi', function (req, res) {
     res.json({
         status: 200,
         msg: 'Hit this endpoint with POST for PSIBot.' +
@@ -103,8 +124,8 @@ router.get('/perf', function (req, res) {
     });
 });
 
-router.post('/perf',  function (req, res) {
-    var bot = new PerfBot(process.env.WEBPAGE_TEST_KEY);
+router.post('/psi',  function (req, res) {
+    var bot = new PSIBot();
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);
