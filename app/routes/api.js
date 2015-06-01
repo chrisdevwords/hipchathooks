@@ -125,7 +125,7 @@ router.get('/psi', function (req, res) {
 });
 
 router.post('/psi',  function (req, res) {
-    var bot = new PSIBot();
+    var bot = new PSIBot(process.env.PSI_KEY || '');
     bot.parseReq(req.body)
         .always(function (msg) {
             res.send(msg);

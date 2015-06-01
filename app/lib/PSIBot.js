@@ -18,7 +18,7 @@ PSIBot.prototype.parseReq = function (reqData) {
     var sender = this.getSenderHandle(reqData);
     var _this = this;
 
-    psi(query, function (err, data) {
+    psi(query, {key: this.apiKey}, function (err, data) {
 
         if (err) {
             def.reject(
