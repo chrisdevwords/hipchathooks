@@ -58,6 +58,13 @@ module.exports = {
                     'endpoint': stubUrl + 'api/dan',
                     'description': 'Official HipChat Integration of the Dan Curis Fanclub, ' +
                         'DUMBO chapter. Don\'t install this just kidding it\'s great.'
+                },
+                {
+                    'slug': '/perf',
+                    'name': 'PerfBot',
+                    'endpoint': stubUrl + 'api/perf',
+                    'description': 'Google PSI rating for any website. ' +
+                    'This one is very much a work in progress.'
                 }
             ]
         };

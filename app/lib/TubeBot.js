@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     $ = require('jquery-deferred'),
     YouTube = require('youtube-node'),
-    HipChatBot = require('./HipChatBot'),
+    HipChatBot = require('hipchat-bot'),
     util = require('./util');
 
 /**
