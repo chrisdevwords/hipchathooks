@@ -2,7 +2,7 @@
 
 var $ = require('jquery-deferred');
 var _ = require('underscore');
-var Imgur = require('./Imgur');
+var Imgur = require('imgur-search');
 
 /**
  * Parses HipChat requests.

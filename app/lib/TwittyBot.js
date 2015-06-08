@@ -1,9 +1,10 @@
 var _ = require('underscore'),
     $ = require('jquery-deferred'),
-    HipChatBot = require('./HipChatBot'),
     util = require('./util'),
     swig = require('swig'),
-    Twitter = require('twitter');
+    Twitter = require('twitter'),
+    HipChatBot = require('hipchat-bot');
+
 
 function TwittyBot(apiCreds, slug) {
     this.slug = slug || '/twitty';

@@ -1,6 +1,6 @@
 var _ = require('underscore'),
     $ = require('jquery-deferred'),
-    HipChatBot = require('./HipChatBot'),
+    HipChatBot = require('hipchat-bot'),
     WebPageTest = require('webpagetest');
 
 function PerfBot (apiKey, slug) {

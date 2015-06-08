@@ -3,10 +3,10 @@
 var _ = require('underscore');
 var $ = require('jquery-deferred');
 var util = require('./util');
-var Imgur = require('./Imgur');
 var weather = require('weather-js');
 var model = require('../model/DanBotModel')
-var HipChatBot = require('./HipChatBot');
+var Imgur = require('imgur-search');
+var HipChatBot = require('hipchat-bot');
 
 /**
  * DanBot - the Official Chat Bot of the Dan Curis Fanclub.

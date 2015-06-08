@@ -1,7 +1,7 @@
 
 var _ = require('underscore');
 var $ = require('jquery-deferred');
-var HipChatBot = require('./HipChatBot');
+var HipChatBot = require('hipchat-bot');
 var Wikipedia = require('./Wikipedia');
 
 function VigodaBot () {}
